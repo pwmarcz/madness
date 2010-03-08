@@ -224,7 +224,7 @@ class Player(Mob):
             ui.message('Your mind is gone!')
             self.death = 'went insane'
         else:
-            if roll(1, 140) > self.sanity:
+            if roll(1, 130) > self.sanity:
                 severity = roll(1, (10-self.sanity/10))
                 self.map.insane_effect(severity)
 
@@ -331,6 +331,14 @@ class Monster(Mob):
         if self.real:
             player.damage(dmg, self)
 
+class UnrealMonster(Monster):
+    ALL = []
+    ABSTRACT = True
+    max_hp = 1
+    dice = 1, 1, 1
+
+##### MONSTERS
+
 class Bat(Monster):
     name = 'bat'
     glyph = 'B', libtcod.dark_orange
@@ -372,3 +380,20 @@ class Orc(Monster):
     dice = 1, 6, 0
     armor = 6
     level = 4
+
+##### UNREAL MONSTERS
+
+class Pony(UnrealMonster):
+    name = 'pony'
+    glyph = 'u', libtcod.white
+    level = 1
+
+class Unicorn(UnrealMonster):
+    name = 'unicorn'
+    glyph = 'U', libtcod.white
+    level = 3
+
+class Wookiee(UnrealMonster):
+    name = 'Wookiee'
+    glyph = 'W', libtcod.dark_orange
+    level = 2

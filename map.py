@@ -2,7 +2,7 @@ from random import randrange, choice
 
 import libtcodpy as libtcod
 
-from mob import Monster, Player, Orc
+from mob import Monster, UnrealMonster, Player
 from item import Item
 from settings import *
 from util import *
@@ -72,26 +72,58 @@ class Map(object):
             item = random_by_level(level, Item.ALL)()
             tile.items.append(item)
 
-    def random_empty_tile(self, no_mob=False):
+    def random_empty_tile(self, no_mob=False, not_seen=False):
         while True:
             x, y = randrange(MAP_W), randrange(MAP_H)
             tile = self.tiles[x][y]
-            if tile.walkable:
-                if not (no_mob and tile.mob):
-                    return (x, y, tile)
+            if not tile.walkable:
+                continue
+            if no_mob and tile.mob:
+                continue
+            if not_seen and self.is_visible(x, y):
+                continue
+            return (x, y, tile)
 
     def insane_effect(self, n):
         ui.message('[Insane effect of severity %d]' % n)
         if n <= 2:
             ui.message(choice(INSANE_MESSAGES))
-        else:
-            pass
+        elif n <= 3:
+            self.transform_monster(True)
+        elif n <= 5:
+            self.add_unreal_monster()
+        elif n <= 7:
+            for i in range(3):
+                self.transform_monster(False)
+
+    def add_unreal_monster(self):
+        mon = random_by_level(self.level+3, UnrealMonster.ALL)(real=False)
+        x, y, tile = self.random_empty_tile(not_seen=True, no_mob=True)
+        mon.put(self, x, y)
+
+    def transform_monster(self, not_seen):
+        def good(mon):
+            if not isinstance(mon, Monster):
+                return
+            if not_seen and self.is_visible(mon.x, mon.y):
+                return False
+            if not mon.real:
+                return False
+            return True
+        mons = filter(good, self.mobs)
+        if not mons:
+            return False
+        cls = random_by_level(self.level+5, Monster.ALL)
+        mon = choice(mons)
+        mon.look_like(cls)
+        return True
 
 INSANE_MESSAGES = [
     'You hear a distant scream.',
     'You hear strange whispers.',
     'Your surroundings suddenly seem to blur.',
     'Everything starts to look colorful...',
+    'Suddenly the ceiling looks much lower than usual.',
 ]
 
 class Tile(object):
