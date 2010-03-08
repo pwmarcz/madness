@@ -123,11 +123,11 @@ def select_item(title, items):
     items = items[:INVENTORY_SIZE]
     draw_inventory(title, items)
     key = readkey()
-    i = key.c - ord('a')
-    if 0 <= i < len(items):
-        return items[i]
-    else:
-        return None
+    if type(key) == str:
+        i = ord(key) - ord('a')
+        if 0 <= i < len(items):
+            return items[i]
+    return None
 
 def draw_all():
     libtcod.console_clear(None)
@@ -151,9 +151,10 @@ def prompt(s, choices=None):
     message(s)
     draw_all()
     if choices:
+        choices = list(choices)
         while True:
             key = readkey()
-            if chr(key.c) in choices:
+            if key in choices:
                 return key
     else:
         return readkey()
@@ -177,9 +178,10 @@ def title_screen():
         libtcod.console_print_center(None, SCREEN_W/2, i+5, libtcod.BKGND_NONE, s)
     libtcod.console_flush()
 
-
 def readkey():
     while True:
         key = libtcod.console_wait_for_keypress(True)
-        if key.vk != 0 or key.c != 0:
-            return key
+        if key.c != 0 and key.c != 0x1b:
+            return chr(key.c)
+        elif key.vk != 0:
+            return key.vk

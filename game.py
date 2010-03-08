@@ -27,13 +27,9 @@ KEYS = [
 ]
 
 def decode_key(key):
-    for ks, cmd in KEYS:
-        for k in ks:
-            if isinstance(k, str):
-                if key.c == ord(k):
-                    return cmd
-            elif key.vk == k:
-                return cmd
+    for keys, cmd in KEYS:
+        if key in keys:
+            return cmd
     return None
 
 class Quit(Exception):
@@ -70,15 +66,12 @@ class Game(object):
             while True:
                 if self.player.death:
                     if WIZARD:
-                        if ui.prompt('Die? [yn]', 'yn').c == ord('n'):
+                        if ui.prompt('Die? [yn]', 'yn') == 'n':
                             ui.new_ui_turn()
                             self.player.resurrect()
                             ui.draw_all()
                             continue
-                    ui.message('[Press ENTER]')
-                    ui.draw_all()
-                    while ui.readkey().vk != libtcod.KEY_ENTER:
-                        pass
+                    ui.prompt('[Press ENTER]', '\n')
                     raise Quit()
                 while self.player.action_turns > 0:
                     key = ui.readkey()
@@ -149,7 +142,7 @@ class Game(object):
         self.start_map(self.map.level+1)
 
     def cmd_quit(self):
-        if ui.prompt('Quit? [yn]', 'yn').c == ord('y'):
+        if ui.prompt('Quit? [yn]', 'yn') == 'y':
             raise Quit()
         else:
             ui.new_ui_turn()
