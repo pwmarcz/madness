@@ -133,23 +133,29 @@ class FloorTile(Tile):
     glyph = '.', libtcod.grey
 
 class WallTile(Tile):
-    name = 'wall'
+    name = 'stone wall'
     walkable = False
     transparent = False
     glyph = '#', libtcod.grey
+    special = True
+
+class WoodWallTile(Tile):
+    name = 'wooden wall'
+    walkable = False
+    transparent = False
+    glyph = '#', libtcod.dark_orange
     special = True
 
 class StairUpTile(Tile):
     name = 'stairs up'
     walkable = True
     transparent = True
-    glyph = '<', libtcod.grey
+    glyph = '<', libtcod.light_grey
     special = True
 
 class StairDownTile(Tile):
     name = 'stairs down'
     walkable = True
     transparent = True
-    glyph = '>', libtcod.grey
+    glyph = '>', libtcod.light_grey
     special = True
-

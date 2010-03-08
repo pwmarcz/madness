@@ -9,7 +9,7 @@ from util import *
 
 TILE_TABLE = {
     '.': FloorTile,
-    '#': WallTile,
+    '#': WoodWallTile,
     ' ': WallTile,
     '>': StairDownTile,
     '<': StairUpTile,
