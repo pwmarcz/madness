@@ -54,7 +54,7 @@ def _draw_status(con):
     status = [
         'Dlvl: %d' % GAME.map.level,
         '',
-        'L%d' % GAME.player.level,
+        'L%d%s' % (GAME.player.level, ' [wizard mode]' if WIZARD else ''),
         'HP:     %d/%d' % (GAME.player.hp, GAME.player.max_hp),
         'Armor:  %d' % GAME.player.armor,
         'Sanity: %d' % GAME.player.sanity,
@@ -104,6 +104,7 @@ def draw_inventory(title='Inventory', items=None):
     libtcod.console_flush()
 
 def select_item(title, items):
+    items = items[:INVENTORY_SIZE]
     draw_inventory(title, items)
     key = readkey()
     i = key.c - ord('a')
@@ -130,10 +131,16 @@ def message(s):
     print s
     MESSAGES.append((True, s))
 
-def prompt(s):
+def prompt(s, choices=None):
     message(s)
     draw_all()
-    return readkey()
+    if choices:
+        while True:
+            key = readkey()
+            if chr(key.c) in choices:
+                return key
+    else:
+        return readkey()
 
 def new_ui_turn():
     for i in reversed(range(len(MESSAGES))):

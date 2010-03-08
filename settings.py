@@ -1,5 +1,7 @@
 import libtcodpy as libtcod
 
+WIZARD = True
+
 INVENTORY_SIZE = 8
 
 SCREEN_W = 80

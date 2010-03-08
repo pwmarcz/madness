@@ -56,7 +56,7 @@ def generate_map():
     arr = array(MAP_W, MAP_H, lambda: ' ')
     rooms = []
     for i in xrange(500):
-        w, h = randrange(5,15), randrange(5,15)
+        w, h = randrange(5,15), randrange(5,10)
         room = try_put_room(arr, w, h)
         if room:
             rooms.append(room)

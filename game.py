@@ -59,6 +59,12 @@ class Game(object):
         ui.draw_all()
         while not self.quitting:
             if self.player.death:
+                if WIZARD:
+                    if ui.prompt('Die? [yn]', 'yn').c == ord('n'):
+                        ui.message('Ok.')
+                        self.player.death = False
+                        self.player.hp = self.player.max_hp
+                        continue
                 ui.message('[Press ENTER]')
                 ui.draw_all()
                 while ui.readkey().vk != libtcod.KEY_ENTER:
@@ -133,8 +139,10 @@ class Game(object):
         self.start_map(self.map.level+1)
 
     def cmd_quit(self):
-        if ui.prompt('Really quit? [yn]').c == ord('y'):
+        if ui.prompt('Quit? [yn]', 'yn').c == ord('y'):
             self.quitting = True
+        else:
+            ui.message('Ok.')
 
     def cmd_cycle_font(self):
         ui.cycle_font()
