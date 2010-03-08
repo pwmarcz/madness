@@ -11,6 +11,10 @@ SLOTS = {
 }
 
 class Item(object):
+    ALL = []
+    __metaclass__ = Register
+    ABSTRACT = True
+
     glyph = UNKNOWN_GLYPH
     slot = None
     speed = 0
@@ -53,6 +57,7 @@ class Item(object):
         player.armor -= self.armor
 
 class LightSource(Item):
+    ABSTRACT = True
     slot = 'l'
 
     @property
@@ -76,6 +81,7 @@ class LightSource(Item):
         player.fov_range -= self.fov_range
 
 class Weapon(Item):
+    ABSTRACT = True
     slot = 'w'
 
     @property
@@ -84,20 +90,16 @@ class Weapon(Item):
                               self.mod_descr)
 
 class Boots(Item):
+    ABSTRACT = True
     slot = 'b'
     plural = True
 
 class Armor(Item):
+    ABSTRACT = True
     slot = 'a'
-
-ITEMS = []
-def register_item(cls):
-    ITEMS.append(cls)
-    return cls
 
 ##### LIGHT SOURCES
 
-@register_item
 class Torch(LightSource):
     name = 'torch'
     glyph = '/', libtcod.dark_orange
@@ -105,7 +107,6 @@ class Torch(LightSource):
     turns = 50
     fov_range = 5
 
-@register_item
 class Lamp(LightSource):
     name = 'lamp'
     glyph = ']', libtcod.yellow
@@ -115,28 +116,24 @@ class Lamp(LightSource):
 
 ###### WEAPONS
 
-@register_item
 class HandAxe(Weapon):
     name = 'hand axe'
     glyph = '(', libtcod.grey
     dice = 1, 6, 0
     level = 1
 
-@register_item
 class ShortSword(Weapon):
     name = 'short sword'
     glyph = '(', libtcod.grey
     dice = 1, 6, 0
     level = 1
 
-@register_item
 class Spear(Weapon):
     name = 'spear'
     glyph = '(', libtcod.light_grey
     dice = 1, 8, 2
     level = 2
 
-@register_item
 class Anvil(Weapon):
     name = 'anvil'
     glyph = '(', libtcod.dark_grey
@@ -144,14 +141,12 @@ class Anvil(Weapon):
     level = 3
     speed = -2
 
-@register_item
 class LongSword(Weapon):
     name = 'long sword'
     glyph = '(', libtcod.light_grey
     dice = 1, 8, 4
     level = 4
 
-@register_item
 class SwordHax(Weapon):
     name = 'sword of hax'
     glyph = '(', libtcod.white
@@ -161,7 +156,6 @@ class SwordHax(Weapon):
 
 ##### BOOTS
 
-@register_item
 class LightBoots(Boots):
     name = 'light boots'
     slot = 'b'
@@ -169,7 +163,6 @@ class LightBoots(Boots):
     armor = 1
     level = 1
 
-@register_item
 class HeavyBoots(Boots):
     name = 'heavy boots'
     glyph = '[', libtcod.light_grey
@@ -177,7 +170,6 @@ class HeavyBoots(Boots):
     speed = -1
     level = 3
 
-@register_item
 class BootsSpeed(Boots):
     name = 'boots of speed'
     glyph = '[', libtcod.light_blue
@@ -186,7 +178,6 @@ class BootsSpeed(Boots):
 
 ##### ARMOR
 
-@register_item
 class UglyClothes(Armor):
     name = 'ugly clothes'
     plural = True
@@ -194,17 +185,16 @@ class UglyClothes(Armor):
     armor = 1
     level = 1
 
-@register_item
 class RingMail(Armor):
     name = 'ring mail'
     glyph = '[', libtcod.grey
     armor = 4
     level = 3
 
-@register_item
 class PlateMail(Armor):
     name = 'plate mail'
     glyph = '[', libtcod.white
     armor = 10
     speed = -2
     level = 5
+

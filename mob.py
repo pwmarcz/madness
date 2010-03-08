@@ -214,6 +214,10 @@ class Player(Mob):
                 self.extinguish(light)
 
 class Monster(Mob):
+    ALL = []
+    __metaclass__ = Register
+    ABSTRACT = True
+
     fov_range = 12
     # n/20 is probability of item drop
     drop_rate = 1
@@ -284,12 +288,6 @@ class Monster(Mob):
             dmg *= 2
         player.damage(dmg, self)
 
-MONSTERS = []
-def register_monster(cls):
-    MONSTERS.append(cls)
-    return cls
-
-@register_monster
 class Bat(Monster):
     name = 'bat'
     glyph = 'B', libtcod.dark_orange
@@ -298,7 +296,6 @@ class Bat(Monster):
     dice = 1, 3, 0
     level = 1
 
-@register_monster
 class Goblin(Monster):
     name = 'goblin'
     glyph = 'g', libtcod.light_blue
@@ -307,7 +304,6 @@ class Goblin(Monster):
     armor = 3
     level = 2
 
-@register_monster
 class Giant(Monster):
     name = 'giant'
     glyph = 'H', libtcod.light_grey
@@ -318,7 +314,6 @@ class Giant(Monster):
     armor = 10
     level = 10
 
-@register_monster
 class Orc(Monster):
     name = 'orc'
     glyph = 'o', libtcod.red
@@ -327,7 +322,6 @@ class Orc(Monster):
     armor = 6
     level = 4
 
-@register_monster
 class Orc(Monster):
     name = 'orc'
     glyph = 'o', libtcod.red

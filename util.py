@@ -41,3 +41,9 @@ def array(w, h, func):
         return [func() for y in range(h)]
     return [line() for x in range(w)]
 
+class Register(type):
+    def __new__(mcs, name, bases, dict):
+        cls = type.__new__(mcs, name, bases, dict)
+        if not dict.get('ABSTRACT'):
+            cls.ALL.append(cls)
+        return cls

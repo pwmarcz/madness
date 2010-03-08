@@ -2,8 +2,8 @@ from random import randrange
 
 import libtcodpy as libtcod
 
-from mob import MONSTERS, Player
-from item import ITEMS
+from mob import Monster, Player
+from item import Item
 from settings import *
 from util import *
 import ui
@@ -64,10 +64,10 @@ class Map(object):
 
     def populate(self, level=1, n_monsters=10, n_items=10):
         for x, y, tile in self.good_tiles(n_monsters, True):
-            mon = random_by_level(level, MONSTERS)
+            mon = random_by_level(level, Monster.ALL)
             mon.put(self, x, y)
         for x, y, tile in self.good_tiles(n_items, False):
-            item = random_by_level(level, ITEMS)
+            item = random_by_level(level, Item.ALL)
             tile.items.append(item)
 
     # Yields n random empty tiles: x,y,tile
