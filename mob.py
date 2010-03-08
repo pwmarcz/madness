@@ -234,7 +234,7 @@ class Monster(Mob):
         self.hp -= dmg
         if self.hp <= 0:
             if roll(1, 20) <= self.drop_rate:
-                item = random_by_level(self.level, ITEMS)
+                item = random_by_level(self.level, Item.ALL)
                 self.tile.items.append(item)
             ui.message('The %s dies!' % self.name)
             self.remove()
