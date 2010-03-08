@@ -62,7 +62,8 @@ class Game(object):
                 if WIZARD:
                     if ui.prompt('Die? [yn]', 'yn').c == ord('n'):
                         ui.message('Ok.')
-                        self.player.death = False
+                        ui.draw_all()
+                        self.player.death = None
                         self.player.hp = self.player.max_hp
                         continue
                 ui.message('[Press ENTER]')
