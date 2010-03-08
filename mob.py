@@ -1,4 +1,4 @@
-from random import choice
+from random import choice, random
 from math import log
 
 import libtcodpy as libtcod
@@ -170,6 +170,8 @@ class Player(Mob):
         if self.hp <= 0:
             if not self.death:
                 ui.message('You die...')
+                # everything has to look normal?
+                mon.look_normal()
                 self.death = 'killed by a %s' % mon.name
 
     def pick_up(self, item):
@@ -214,16 +216,17 @@ class Player(Mob):
             if light.turns_left <= 0:
                 self.extinguish(light)
         if roll(1, 5) == 1:
-            self.change_sanity(-roll(1, 2+self.map.level))
+            self.decrease_sanity(roll(1, 2+self.map.level))
 
-    def change_sanity(self, n):
-        self.sanity += n
+    def decrease_sanity(self, n):
+        self.sanity -= n
         if self.sanity <= 0:
             ui.message('Your mind is gone!')
             self.death = 'went insane'
         else:
-            pass
-            # messages?
+            if roll(1, 140) > self.sanity:
+                severity = roll(1, (10-self.sanity/10))
+                self.map.insane_effect(severity)
 
     def resurrect(self):
         self.death = None
@@ -241,11 +244,30 @@ class Monster(Mob):
     # n/20 is probability of item drop
     drop_rate = 1
 
-    def __init__(self):
+    def __init__(self, real=True):
         super(Monster, self).__init__()
         self.hp = self.max_hp
+        self.real = real
+
+    def look_like(self, cls):
+        self.name = cls.name
+        self.glyph = cls.glyph
+
+    def look_normal(self):
+        try:
+            del self.name
+            del self.glyph
+        except AttributeError:
+            pass
+
+    def disappear(self):
+        ui.message('The %s disappears!' % self.name)
+        self.remove()
 
     def damage(self, dmg):
+        if not self.real:
+            self.disappear()
+            return
         dmg -= self.armor
         if dmg < 0:
             ui.message('The %s shrugs off the hit.' % self.name)
@@ -253,8 +275,9 @@ class Monster(Mob):
         self.hp -= dmg
         if self.hp <= 0:
             if roll(1, 20) <= self.drop_rate:
-                item = random_by_level(self.level, Item.ALL)
+                item = random_by_level(self.level, Item.ALL)()
                 self.tile.items.append(item)
+            self.look_normal()
             ui.message('The %s dies!' % self.name)
             self.remove()
             self.map.player.add_exp(self)
@@ -305,7 +328,8 @@ class Monster(Mob):
         else:
             ui.message('The %s critically hits you!' % self.name)
             dmg *= 2
-        player.damage(dmg, self)
+        if self.real:
+            player.damage(dmg, self)
 
 class Bat(Monster):
     name = 'bat'

@@ -1,8 +1,8 @@
-from random import randrange
+from random import randrange, choice
 
 import libtcodpy as libtcod
 
-from mob import Monster, Player
+from mob import Monster, Player, Orc
 from item import Item
 from settings import *
 from util import *
@@ -63,33 +63,36 @@ class Map(object):
                 mob.act()
 
     def populate(self, level=1, n_monsters=10, n_items=10):
-        for x, y, tile in self.good_tiles(n_monsters, True):
-            mon = random_by_level(level, Monster.ALL)
+        for i in range(n_monsters):
+            x, y, tile = self.random_empty_tile(no_mob=True)
+            mon = random_by_level(level, Monster.ALL)()
             mon.put(self, x, y)
-        for x, y, tile in self.good_tiles(n_items, False):
-            item = random_by_level(level, Item.ALL)
+        for i in range(n_items):
+            x, y, tile = self.random_empty_tile()
+            item = random_by_level(level, Item.ALL)()
             tile.items.append(item)
 
-    # Yields n random empty tiles: x,y,tile
-    def good_tiles(self, n, no_mob, n_tries=1000):
-        for i in xrange(n_tries):
-            x, y = randrange(MAP_W), randrange(MAP_H)
-            tile = self.tiles[x][y]
-            if not tile.walkable:
-                continue
-            if no_mob and tile.mob:
-                continue
-            yield (x, y, tile)
-            n -= 1
-            if n == 0:
-                return
-
-    def random_empty_tile(self):
+    def random_empty_tile(self, no_mob=False):
         while True:
             x, y = randrange(MAP_W), randrange(MAP_H)
             tile = self.tiles[x][y]
-            if tile.walkable and not tile.mob:
-                return (x, y, tile)
+            if tile.walkable:
+                if not (no_mob and tile.mob):
+                    return (x, y, tile)
+
+    def insane_effect(self, n):
+        ui.message('[Insane effect of severity %d]' % n)
+        if n <= 2:
+            ui.message(choice(INSANE_MESSAGES))
+        else:
+            pass
+
+INSANE_MESSAGES = [
+    'You hear a distant scream.',
+    'You hear strange whispers.',
+    'Your surroundings suddenly seem to blur.',
+    'Everything starts to look colorful...',
+]
 
 class Tile(object):
     walkable = True

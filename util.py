@@ -34,7 +34,7 @@ def describe_dice(a, b, c):
 
 def random_by_level(level, items):
     items = filter(lambda a: a.level <= level, items)
-    return choice(items)()
+    return choice(items)
 
 def array(w, h, func):
     def line():

@@ -36,11 +36,11 @@ def close():
     libtcod.console_delete(CON_INV)
 
 def insanize_color(color, sanity):
-    if sanity < 75:
+    if sanity < 50:
         color2 = choice([
                 libtcod.black, libtcod.white, libtcod.green, libtcod.yellow,
                 libtcod.sky, libtcod.red, libtcod.pink])
-        d = 0.4*(1 - sanity / 75.0)
+        d = 0.4*(1 - sanity / 50.0)
         color = libtcod.color_lerp(color, color2, d)
         return color
     else:
