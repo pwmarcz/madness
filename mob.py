@@ -207,11 +207,30 @@ class Player(Mob):
         self.items.remove(light)
 
     def heartbeat(self):
+        super(Player, self).heartbeat()
         light = self.equipment['l']
         if light:
             light.turns_left -= 1
             if light.turns_left <= 0:
                 self.extinguish(light)
+        if roll(1, 5) == 1:
+            self.change_sanity(-roll(1, 2+self.map.level))
+
+    def change_sanity(self, n):
+        self.sanity += n
+        if self.sanity <= 0:
+            ui.message('Your mind is gone!')
+            self.death = 'went insane'
+        else:
+            pass
+            # messages?
+
+    def resurrect(self):
+        self.death = None
+        if self.hp <= 0:
+            self.hp = self.max_hp
+        if self.sanity <= 0:
+            self.sanity = 100
 
 class Monster(Mob):
     ALL = []

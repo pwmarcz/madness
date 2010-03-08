@@ -72,8 +72,7 @@ class Game(object):
                     if WIZARD:
                         if ui.prompt('Die? [yn]', 'yn').c == ord('n'):
                             ui.new_ui_turn()
-                            self.player.death = None
-                            self.player.hp = self.player.max_hp
+                            self.player.resurrect()
                             ui.draw_all()
                             continue
                     ui.message('[Press ENTER]')

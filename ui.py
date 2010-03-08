@@ -1,4 +1,7 @@
+from random import choice
+
 import libtcodpy as libtcod
+
 from settings import *
 from util import distance, describe_dice
 from item import SLOTS
@@ -32,6 +35,17 @@ def close():
     libtcod.console_delete(CON_STATUS)
     libtcod.console_delete(CON_INV)
 
+def insanize_color(color, sanity):
+    if sanity < 75:
+        color2 = choice([
+                libtcod.black, libtcod.white, libtcod.green, libtcod.yellow,
+                libtcod.sky, libtcod.red, libtcod.pink])
+        d = 0.4*(1 - sanity / 75.0)
+        color = libtcod.color_lerp(color, color2, d)
+        return color
+    else:
+        return color
+
 def _draw_map(m, con):
     for x in range(MAP_W):
         for y in range(MAP_H):
@@ -43,6 +57,7 @@ def _draw_map(m, con):
                 if d > 0.66:
                     color = libtcod.color_lerp(color, libtcod.dark_grey,
                                                d*3-2)
+                color = insanize_color(color, GAME.player.sanity)
             else:
                 c, _ = tile.known_glyph
                 color = libtcod.dark_grey
