@@ -2,3 +2,5 @@ syntax: glob
 
 *.pyc
 *.exe
+dist
+build
