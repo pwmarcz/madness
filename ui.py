@@ -11,13 +11,19 @@ INV_H = INVENTORY_SIZE + 3
 def init(game):
     global CON_MAP, CON_BUFFER, CON_STATUS, CON_INV, MESSAGES, GAME
     GAME = game
-    libtcod.console_set_custom_font(*FONT)
+    libtcod.console_set_custom_font(*FONTS[FONT_INDEX])
     libtcod.console_init_root(SCREEN_W, SCREEN_H, TITLE, False)
     CON_MAP = libtcod.console_new(MAP_W, MAP_H)
     CON_BUFFER = libtcod.console_new(SCREEN_W, BUFFER_H)
     CON_STATUS = libtcod.console_new(STATUS_W, STATUS_H)
     CON_INV = libtcod.console_new(INV_W, INV_H)
     MESSAGES = []
+
+def cycle_font():
+    global FONT_INDEX
+    FONT_INDEX = (FONT_INDEX + 1) % len(FONTS)
+    libtcod.console_set_custom_font(*FONTS[FONT_INDEX])
+    libtcod.console_init_root(SCREEN_W, SCREEN_H, TITLE, False)
 
 def close():
     GAME = None
@@ -114,7 +120,7 @@ def draw_all():
     libtcod.console_blit(CON_MAP, 0, 0, MAP_W, MAP_H,
                          None, 0, 0)
     libtcod.console_blit(CON_BUFFER, 0, 0, SCREEN_W, BUFFER_H,
-                         None, 0, MAP_H+1)
+                         None, 0, MAP_H)
     libtcod.console_blit(CON_STATUS, 0, 0, STATUS_W, STATUS_H,
                          None, MAP_W+1, 0)
     libtcod.console_flush()

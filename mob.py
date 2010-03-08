@@ -80,7 +80,7 @@ class Player(Mob):
         super(Player, self).__init__()
         self.level = 1
         self.sanity = MAX_SANITY
-        self.max_hp = 15
+        self.max_hp = 150
         self.hp = self.max_hp
         self.items = []
         self.equipment = dict((slot, None) for slot in SLOTS)

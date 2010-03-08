@@ -23,6 +23,7 @@ KEYS = [
     (['d'], 'drop'),
     (['>'], 'descend'),
     (['?'], 'help'),
+    ([libtcod.KEY_F10], 'cycle_font'),
 ]
 
 def decode_key(key):
@@ -134,6 +135,9 @@ class Game(object):
     def cmd_quit(self):
         if ui.prompt('Really quit? [yn]').c == ord('y'):
             self.quitting = True
+
+    def cmd_cycle_font(self):
+        ui.cycle_font()
 
 game = Game()
 ui.init(game)

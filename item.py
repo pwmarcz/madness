@@ -113,14 +113,14 @@ class Lamp(LightSource):
     turns = 100
     fov_range = 10
 
+###### WEAPONS
+
 @register_item
 class HandAxe(Weapon):
     name = 'hand axe'
     glyph = '(', libtcod.grey
     dice = 1, 6, 0
     level = 1
-
-###### WEAPONS
 
 @register_item
 class ShortSword(Weapon):
