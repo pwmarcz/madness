@@ -36,14 +36,23 @@ def decode_key(key):
                 return cmd
     return None
 
+class Quit(Exception):
+    pass
+
 class Game(object):
     def __init__(self):
         pass
 
+    def play(self):
+        ui.init(self)
+        ui.title_screen()
+        self.start()
+        self.loop()
+        ui.close()
+
     def start(self):
         self.player = Player()
         self.turns = 0
-        self.quitting = False
         ui.message('Welcome to Madness!')
         ui.message('Press ? for help.')
         self.start_map(1)
@@ -57,29 +66,30 @@ class Game(object):
 
     def loop(self):
         ui.draw_all()
-        while not self.quitting:
-            if self.player.death:
-                if WIZARD:
-                    if ui.prompt('Die? [yn]', 'yn').c == ord('n'):
-                        ui.message('Ok.')
-                        ui.draw_all()
-                        self.player.death = None
-                        self.player.hp = self.player.max_hp
-                        continue
-                ui.message('[Press ENTER]')
+        try:
+            while True:
+                if self.player.death:
+                    if WIZARD:
+                        if ui.prompt('Die? [yn]', 'yn').c == ord('n'):
+                            ui.new_ui_turn()
+                            self.player.death = None
+                            self.player.hp = self.player.max_hp
+                            ui.draw_all()
+                            continue
+                    ui.message('[Press ENTER]')
+                    ui.draw_all()
+                    while ui.readkey().vk != libtcod.KEY_ENTER:
+                        pass
+                    raise Quit()
+                while self.player.action_turns > 0:
+                    key = ui.readkey()
+                    self.do_command(key)
+                    ui.draw_all()
+                self.map.do_turn(self.turns)
+                self.turns += 1
                 ui.draw_all()
-                while ui.readkey().vk != libtcod.KEY_ENTER:
-                    pass
-                break
-            while self.player.action_turns > 0:
-                key = ui.readkey()
-                self.do_command(key)
-                ui.draw_all()
-                if self.quitting:
-                    break
-            self.map.do_turn(self.turns)
-            self.turns += 1
-            ui.draw_all()
+        except Quit:
+            pass
 
     def do_command(self, key):
         cmd = decode_key(key)
@@ -141,16 +151,12 @@ class Game(object):
 
     def cmd_quit(self):
         if ui.prompt('Quit? [yn]', 'yn').c == ord('y'):
-            self.quitting = True
+            raise Quit()
         else:
-            ui.message('Ok.')
+            ui.new_ui_turn()
 
     def cmd_cycle_font(self):
         ui.cycle_font()
 
-game = Game()
-ui.init(game)
-ui.title_screen()
-game.start()
-game.loop()
-ui.close()
+if __name__ == '__main__':
+    Game().play()

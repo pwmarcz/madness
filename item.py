@@ -189,6 +189,7 @@ class BootsSpeed(Boots):
 @register_item
 class UglyClothes(Armor):
     name = 'ugly clothes'
+    plural = True
     glyph = '[', libtcod.green
     armor = 1
     level = 1

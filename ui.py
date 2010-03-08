@@ -51,6 +51,7 @@ def _draw_map(m, con):
 
 def _draw_status(con):
     libtcod.console_clear(con)
+    libtcod.console_set_foreground_color(con, libtcod.light_grey)
     status = [
         'Dlvl: %d' % GAME.map.level,
         '',
