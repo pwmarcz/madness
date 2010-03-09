@@ -1,14 +1,8 @@
-import libtcodpy as libtcod
+import libtcodpy as T
+
 from settings import *
 from util import *
 from random import choice
-
-SLOTS = {
-    'w': 'wielded',
-    'l': 'carried as light source',
-    'a': 'being worn',
-    'b': 'being worn',
-}
 
 class Item(object):
     ALL = []
@@ -101,14 +95,14 @@ class Armor(Item):
 
 class Torch(LightSource):
     name = 'torch'
-    glyph = '/', libtcod.dark_orange
+    glyph = '/', T.dark_orange
     level = 1
     turns = 50
     light_range = 5
 
 class Lamp(LightSource):
     name = 'lamp'
-    glyph = ']', libtcod.yellow
+    glyph = ']', T.yellow
     level = 4
     turns = 100
     light_range = 10
@@ -117,38 +111,38 @@ class Lamp(LightSource):
 
 class HandAxe(Weapon):
     name = 'hand axe'
-    glyph = '(', libtcod.grey
+    glyph = '(', T.grey
     dice = 1, 6, 0
     level = 1
 
 class ShortSword(Weapon):
     name = 'short sword'
-    glyph = '(', libtcod.grey
+    glyph = '(', T.grey
     dice = 1, 6, 0
     level = 1
 
 class Spear(Weapon):
     name = 'spear'
-    glyph = '(', libtcod.light_grey
+    glyph = '(', T.light_grey
     dice = 1, 8, 2
     level = 2
 
 class Anvil(Weapon):
     name = 'anvil'
-    glyph = '(', libtcod.dark_grey
+    glyph = '(', T.dark_grey
     dice = 1, 12, 2
     level = 3
     speed = -2
 
 class LongSword(Weapon):
     name = 'long sword'
-    glyph = '(', libtcod.light_grey
+    glyph = '(', T.light_grey
     dice = 1, 8, 4
     level = 4
 
 class SwordHax(Weapon):
     name = 'sword of hax'
-    glyph = '(', libtcod.white
+    glyph = '(', T.white
     dice = 2, 20, 20
     armor = 5
     level = 1
@@ -158,20 +152,20 @@ class SwordHax(Weapon):
 class LightBoots(Boots):
     name = 'light boots'
     slot = 'b'
-    glyph = '[', libtcod.dark_orange
+    glyph = '[', T.dark_orange
     armor = 1
     level = 1
 
 class HeavyBoots(Boots):
     name = 'heavy boots'
-    glyph = '[', libtcod.light_grey
+    glyph = '[', T.light_grey
     armor = 2
     speed = -1
     level = 3
 
 class BootsSpeed(Boots):
     name = 'boots of speed'
-    glyph = '[', libtcod.light_blue
+    glyph = '[', T.light_blue
     speed = 2
     level = 5
 
@@ -180,19 +174,19 @@ class BootsSpeed(Boots):
 class UglyClothes(Armor):
     name = 'ugly clothes'
     plural = True
-    glyph = '[', libtcod.green
+    glyph = '[', T.green
     armor = 1
     level = 1
 
 class RingMail(Armor):
     name = 'ring mail'
-    glyph = '[', libtcod.grey
+    glyph = '[', T.grey
     armor = 4
     level = 3
 
 class PlateMail(Armor):
     name = 'plate mail'
-    glyph = '[', libtcod.white
+    glyph = '[', T.white
     armor = 10
     speed = -2
     level = 5

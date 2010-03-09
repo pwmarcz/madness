@@ -39,3 +39,10 @@ MAX_SPEED = 5
 MIN_SPEED = -4
 
 MAX_CLEVEL = 10
+
+INVENTORY_SLOTS = {
+    'w': 'wielded',
+    'l': 'carried as light source',
+    'a': 'being worn',
+    'b': 'being worn',
+}

@@ -1,6 +1,6 @@
 from random import randrange, choice
 
-import libtcodpy as libtcod
+import libtcodpy as T
 
 ALL_DIRS = []
 for dx in range(-1,2):
@@ -50,8 +50,8 @@ class Register(type):
             cls.ALL.append(cls)
         return cls
 
-RAINBOW_COLORS = [libtcod.red, libtcod.blue, libtcod.green, libtcod.yellow,
-                  libtcod.pink, libtcod.white]
+RAINBOW_COLORS = [T.red, T.blue, T.green, T.yellow,
+                  T.pink, T.white]
 
 def rainbow_glyph(c):
     @property

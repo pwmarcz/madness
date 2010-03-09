@@ -1,6 +1,6 @@
 from random import randrange, choice, shuffle
 
-import libtcodpy as libtcod
+import libtcodpy as T
 
 from mob import Monster, UnrealMonster, Player
 from item import Item
@@ -16,11 +16,11 @@ class Map(object):
         self.player = None
         self.mobs = []
 
-        self.fov_map = libtcod.map_new(MAP_W, MAP_H)
+        self.fov_map = T.map_new(MAP_W, MAP_H)
         for x in range(MAP_W):
             for y in range(MAP_H):
                 tile = self.tiles[x][y]
-                libtcod.map_set_properties(self.fov_map,
+                T.map_set_properties(self.fov_map,
                                            x, y,
                                            tile.walkable,
                                            tile.transparent)
@@ -35,7 +35,7 @@ class Map(object):
                     return (x, y, tile)
 
     def recalc_fov(self):
-        libtcod.map_compute_fov(self.fov_map,
+        T.map_compute_fov(self.fov_map,
                                 self.player.x, self.player.y,
                                 MAP_W,
                                 True)
@@ -45,11 +45,11 @@ class Map(object):
                     self.tiles[x][y].remember_glyph()
 
     def is_visible(self, x, y):
-        return libtcod.map_is_in_fov(self.fov_map, x, y) and \
+        return T.map_is_in_fov(self.fov_map, x, y) and \
             distance(x, y, self.player.x, self.player.y) <= self.player.fov_range
 
     def __del__(self):
-        libtcod.map_delete(self.fov_map)
+        T.map_delete(self.fov_map)
 
     def do_turn(self, t):
         for mob in self.mobs:
@@ -145,7 +145,7 @@ class Tile(object):
     walkable = True
     transparent = True
     glyph = UNKNOWN_GLYPH
-    known_glyph = ' ', libtcod.white
+    known_glyph = ' ', T.white
     # if special, describe on entering
     special = False
 
@@ -180,32 +180,32 @@ class FloorTile(Tile):
     name = 'floor'
     walkable = True
     transparent = True
-    glyph = '.', libtcod.grey
+    glyph = '.', T.grey
 
 class WallTile(Tile):
     name = 'stone wall'
     walkable = False
     transparent = False
-    glyph = '#', libtcod.grey
+    glyph = '#', T.grey
     special = True
 
 class WoodWallTile(Tile):
     name = 'wooden wall'
     walkable = False
     transparent = False
-    glyph = '#', libtcod.dark_orange
+    glyph = '#', T.dark_orange
     special = True
 
 class StairUpTile(Tile):
     name = 'stairs up'
     walkable = True
     transparent = True
-    glyph = '<', libtcod.light_grey
+    glyph = '<', T.light_grey
     special = True
 
 class StairDownTile(Tile):
     name = 'stairs down'
     walkable = True
     transparent = True
-    glyph = '>', libtcod.light_grey
+    glyph = '>', T.light_grey
     special = True

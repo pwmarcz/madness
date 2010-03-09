@@ -1,4 +1,4 @@
-import libtcodpy as libtcod
+import libtcodpy as T
 
 from settings import *
 from mapgen import generate_map
@@ -9,21 +9,21 @@ import ui
 
 KEYS = [
     (['y', '7'], ('walk', (-1, -1))),
-    (['k', '8', libtcod.KEY_UP], ('walk', (0, -1))),
+    (['k', '8', T.KEY_UP], ('walk', (0, -1))),
     (['u', '9'], ('walk', (1, -1))),
-    (['h', '4', libtcod.KEY_LEFT], ('walk', (-1, 0))),
+    (['h', '4', T.KEY_LEFT], ('walk', (-1, 0))),
     (['.', '5'], 'wait'),
-    (['l', '6', libtcod.KEY_RIGHT], ('walk', (1, 0))),
+    (['l', '6', T.KEY_RIGHT], ('walk', (1, 0))),
     (['b', '1'], ('walk', (-1, 1))),
-    (['j', '2', libtcod.KEY_DOWN], ('walk', (0, 1))),
+    (['j', '2', T.KEY_DOWN], ('walk', (0, 1))),
     (['n', '3'], ('walk', (1, 1))),
-    (['q', libtcod.KEY_ESCAPE], 'quit'),
+    (['q', T.KEY_ESCAPE], 'quit'),
     (['g', ','], 'pick_up'),
     (['i'], 'inventory'),
     (['d'], 'drop'),
     (['>'], 'descend'),
     (['?'], 'help'),
-    ([libtcod.KEY_F10], 'cycle_font'),
+    ([T.KEY_F10], 'cycle_font'),
 ]
 
 def decode_key(key):
@@ -71,12 +71,11 @@ class Game(object):
                             self.player.resurrect()
                             ui.draw_all()
                             continue
-                    ui.prompt('[Press ENTER]', [libtcod.KEY_ENTER])
+                    ui.prompt('[Game over. Press ENTER]', [T.KEY_ENTER])
                     raise Quit()
                 while self.player.action_turns > 0:
                     key = ui.readkey()
                     self.do_command(key)
-                    ui.draw_all()
                 self.map.do_turn(self.turns)
                 self.turns += 1
                 ui.draw_all()
@@ -93,6 +92,7 @@ class Game(object):
         else:
             name, args = cmd
             getattr(self, 'cmd_'+name)(*args)
+        ui.draw_all()
 
     def cmd_walk(self, dx, dy):
         destx, desty = self.player.x+dx, self.player.y+dy

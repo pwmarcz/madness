@@ -1,11 +1,11 @@
 from random import choice, random
 from math import log
 
-import libtcodpy as libtcod
+import libtcodpy as T
 
 from settings import *
 from util import *
-from item import *
+from item import Item
 import ui
 
 class Mob(object):
@@ -73,7 +73,7 @@ class Mob(object):
         pass
 
 class Player(Mob):
-    glyph = '@', libtcod.white
+    glyph = '@', T.white
     regen = 4
 
     def __init__(self, wizard):
@@ -83,10 +83,11 @@ class Player(Mob):
         self.max_hp = 15
         self.hp = self.max_hp
         if wizard:
-            self.items = [Torch(), Torch(), SwordHax()]
+            import item
+            self.items = [item.Torch(), item.Torch(), item.SwordHax()]
         else:
             self.items = []
-        self.equipment = dict((slot, None) for slot in SLOTS)
+        self.equipment = dict((slot, None) for slot in INVENTORY_SLOTS)
         self.fov_range = 3
         self.light_range = 0
         self.action_turns = 1
@@ -314,8 +315,7 @@ class Monster(Mob):
     def see_player(self):
         player = self.map.player
         fov_range = self.fov_range + player.light_range/2
-        if libtcod.map_is_in_fov(
-            self.map.fov_map, self.x, self.y):
+        if T.map_is_in_fov(self.map.fov_map, self.x, self.y):
             d = distance(self.x, self.y, player.x, player.y)
             if d <= fov_range:
                 return d
@@ -373,7 +373,7 @@ class UnrealMonster(Monster):
 
 class Bat(Monster):
     name = 'bat'
-    glyph = 'B', libtcod.dark_orange
+    glyph = 'B', T.dark_orange
     max_hp = 3
     speed = 2
     dice = 1, 3, 0
@@ -382,7 +382,7 @@ class Bat(Monster):
 
 class Rat(Monster):
     name = 'rat'
-    glyph = 'r', libtcod.dark_orange
+    glyph = 'r', T.dark_orange
     max_hp = 3
     speed = 0
     dice = 1, 3, 0
@@ -391,7 +391,7 @@ class Rat(Monster):
 
 class Goblin(Monster):
     name = 'goblin'
-    glyph = 'g', libtcod.light_blue
+    glyph = 'g', T.light_blue
     max_hp = 5
     dice = 1, 6, 0
     armor = 3
@@ -399,7 +399,7 @@ class Goblin(Monster):
 
 class Giant(Monster):
     name = 'giant'
-    glyph = 'H', libtcod.light_grey
+    glyph = 'H', T.light_grey
     max_hp = 20
     dice = 5, 4, 0
     fov_range = 6
@@ -409,7 +409,7 @@ class Giant(Monster):
 
 class Orc(Monster):
     name = 'orc'
-    glyph = 'o', libtcod.red
+    glyph = 'o', T.red
     max_hp = 10
     dice = 1, 6, 0
     armor = 6
@@ -417,7 +417,7 @@ class Orc(Monster):
 
 class Orc(Monster):
     name = 'orc'
-    glyph = 'o', libtcod.red
+    glyph = 'o', T.red
     max_hp = 10
     dice = 1, 6, 0
     armor = 6
@@ -436,14 +436,14 @@ class Pony(UnrealMonster):
 
 class Unicorn(UnrealMonster):
     name = 'unicorn'
-    glyph = 'U', libtcod.white
+    glyph = 'U', T.white
     max_hp = 20
     dice = 1, 10, 0
     level = 5
 
 class Wookiee(UnrealMonster):
     name = 'Wookiee'
-    glyph = 'W', libtcod.dark_orange
+    glyph = 'W', T.dark_orange
     max_hp = 7
     dice = 1, 7, 2
     level = 3

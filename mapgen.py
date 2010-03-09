@@ -1,7 +1,7 @@
 from random import randrange
 from sys import stdout
 
-import libtcodpy as libtcod
+import libtcodpy as T
 
 from settings import *
 from map import *
@@ -64,13 +64,13 @@ def generate_map():
     #randomly_place(arr, '<')
     randomly_place(arr, '>')
 
-    path = libtcod.path_new_using_function(
+    path = T.path_new_using_function(
         MAP_W, MAP_H, corridor_path_func, arr, 0.0)
 
     def connect(x1, y1, x2, y2):
-        libtcod.path_compute(path, x1, y1, x2, y2)
-        for i in range(libtcod.path_size(path)):
-            x, y = libtcod.path_get(path, i)
+        T.path_compute(path, x1, y1, x2, y2)
+        for i in range(T.path_size(path)):
+            x, y = T.path_get(path, i)
             c = arr[x][y]
             if c == '#' or c == ' ':
                 arr[x][y] = '.'
