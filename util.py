@@ -1,5 +1,7 @@
 from random import randrange, choice
 
+import libtcodpy as libtcod
+
 ALL_DIRS = []
 for dx in range(-1,2):
     for dy in range(-1,2):
@@ -47,3 +49,14 @@ class Register(type):
         if not dict.get('ABSTRACT'):
             cls.ALL.append(cls)
         return cls
+
+RAINBOW_COLORS = [libtcod.red, libtcod.blue, libtcod.green, libtcod.yellow,
+                  libtcod.pink, libtcod.white]
+
+def rainbow_glyph(c):
+    @property
+    def glyph(self):
+        if not hasattr(self, 'rainbow_glyph'):
+            self.rainbow_glyph = c, choice(RAINBOW_COLORS)
+        return self.rainbow_glyph
+    return glyph
