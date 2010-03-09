@@ -150,3 +150,5 @@ class Game(object):
     def cmd_cycle_font(self):
         ui.cycle_font()
 
+    def cmd_help(self):
+        ui.help_screen()

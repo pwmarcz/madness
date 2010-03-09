@@ -82,11 +82,13 @@ class Player(Mob):
         self.sanity = MAX_SANITY
         self.max_hp = 15
         self.hp = self.max_hp
+
+        import item
         if wizard:
-            import item
             self.items = [item.Torch(), item.Torch(), item.SwordHax()]
         else:
-            self.items = []
+            self.items = [item.Torch()]
+
         self.equipment = dict((slot, None) for slot in INVENTORY_SLOTS)
         self.fov_range = 3
         self.light_range = 0

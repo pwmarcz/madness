@@ -178,6 +178,14 @@ def title_screen():
     T.console_flush()
     readkey()
 
+def help_screen():
+    T.console_clear(None)
+    T.console_set_foreground_color(None, T.light_grey)
+    for i, line in enumerate(HELP_TEXT.split('\n')):
+        T.console_print_left(None, 1, 1+i, T.BKGND_NONE, line)
+    T.console_flush()
+    readkey()
+
 def readkey():
     while True:
         key = T.console_wait_for_keypress(True)

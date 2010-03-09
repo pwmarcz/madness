@@ -31,6 +31,25 @@ TITLE_SCREEN = [
     'Press any key to continue',
 ]
 
+HELP_TEXT = '''\
+--- Madness - a roguelike ---
+
+  Your task is simple: reach level 10 of the dungeon and defeat the horrible
+<boss>. Be careful - those who stay in these caves too long suffer fate worse
+than death...
+
+  You have a torch in your backpack. It may prove useful.
+
+--- Keybindings ---
+Move:  numpad,             Inventory:    i
+       arrow keys,         Pick up:      g, ,
+       yuhjklbn            Drop:         d
+Wait:  5, .                Descend:      >
+Help:  ?                   Change font:  F10
+Quit:  q, Esc
+
+[Press any key to continue]'''
+
 UNKNOWN_GLYPH = '?', libtcod.red
 
 MAX_SANITY = 100
