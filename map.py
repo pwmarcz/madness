@@ -1,4 +1,4 @@
-from random import randrange, choice
+from random import randrange, choice, shuffle
 
 import libtcodpy as libtcod
 
@@ -64,7 +64,7 @@ class Map(object):
 
     def populate(self, level=1, n_monsters=10, n_items=10):
         for i in range(n_monsters):
-            mcls = random_by_level(level, Monster.ALL)()
+            mcls = random_by_level(level, Monster.ALL)
             self.place_monsters(mcls)
         for i in range(n_items):
             x, y, tile = self.random_empty_tile()
@@ -73,19 +73,23 @@ class Map(object):
 
     def place_monsters(self, mcls):
         x, y, tile = self.random_empty_tile(no_mob=True)
-        n = mcls.multi
-        def flood(x, y):
-            if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
-                return
+        def flood(x, y, n):
             if n == 0:
-                return
+                return n
+            if self.tiles[x][y].mob:
+                return n
+            if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
+                return n
+            print mcls, x, y
             mcls().put(self, x, y)
             n -= 1
-            flood(x+1, y)
-            flood(x-1, y)
-            flood(x, y+1)
-            flood(x, y-1)
-        flood(x, y)
+            dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+            shuffle(dirs)
+            for dx, dy in dirs:
+                n = flood(x+dx, y+dy, n)
+            return n
+        flood(x, y, mcls.multi)
+        print '----'
 
     def random_empty_tile(self, no_mob=False, not_seen=False):
         while True:
