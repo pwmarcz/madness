@@ -383,7 +383,7 @@ class Rat(Monster):
     max_hp = 3
     speed = 0
     dice = 1, 3, 0
-    multi = 4
+    multi = 10
     level = 1
 
 class Goblin(Monster):
