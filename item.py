@@ -74,11 +74,10 @@ class LightSource(Item):
         self.turns_left = self.turns
 
     def on_equip(self, player):
-        player.fov_range += self.fov_range
-        player.map.recalc_fov()
+        player.change_light_range(self.light_range)
 
     def on_unequip(self, player):
-        player.fov_range -= self.fov_range
+        player.change_light_range(-self.light_range)
 
 class Weapon(Item):
     ABSTRACT = True
@@ -105,14 +104,14 @@ class Torch(LightSource):
     glyph = '/', libtcod.dark_orange
     level = 1
     turns = 50
-    fov_range = 5
+    light_range = 5
 
 class Lamp(LightSource):
     name = 'lamp'
     glyph = ']', libtcod.yellow
     level = 4
     turns = 100
-    fov_range = 10
+    light_range = 10
 
 ###### WEAPONS
 

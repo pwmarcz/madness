@@ -52,11 +52,10 @@ def _draw_map(m, con):
             tile = m.tiles[x][y]
             if m.is_visible(x, y):
                 c, color = tile.visible_glyph
-                d = (distance(x, y, m.player.x, m.player.y) /
-                     float(m.player.fov_range))
-                if d > 0.66:
+                d = distance(x, y, m.player.x, m.player.y)
+                if d > m.player.light_range + 1:
                     color = libtcod.color_lerp(color, libtcod.dark_grey,
-                                               d*3-2)
+                                               0.6)
                 color = insanize_color(color, GAME.player.sanity)
             else:
                 c, _ = tile.known_glyph
@@ -180,8 +179,8 @@ def title_screen():
 
 def readkey():
     while True:
-        #key = libtcod.console_wait_for_keypress(True)
-        print key.vk, repr(chr(key.c))
+        key = libtcod.console_wait_for_keypress(True)
+        #print key.vk, repr(chr(key.c))
         if key.c != 0 and chr(key.c) not in '\x1b\n\r\t':
             return chr(key.c)
         elif key.vk != 0:

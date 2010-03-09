@@ -96,7 +96,7 @@ class Map(object):
             pass
 
     def add_unreal_monster(self):
-        mon = random_by_level(self.level+3, UnrealMonster.ALL)(real=False)
+        mon = random_by_level(self.level+3, UnrealMonster.ALL)()
         x, y, tile = self.random_empty_tile(not_seen=True, no_mob=True)
         mon.put(self, x, y)
 

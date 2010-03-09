@@ -82,9 +82,10 @@ class Player(Mob):
         self.sanity = MAX_SANITY
         self.max_hp = 15
         self.hp = self.max_hp
-        self.items = []
+        self.items = [Torch()]
         self.equipment = dict((slot, None) for slot in SLOTS)
-        self.fov_range = 4
+        self.fov_range = 3
+        self.light_range = 0
         self.action_turns = 1
         self.armor = 0
         self.exp = 0
@@ -113,6 +114,11 @@ class Player(Mob):
         self.max_hp += hp_inc
         self.hp += hp_inc
         ui.message('Congratulations! You advance to level %d.' % self.level)
+
+    def change_light_range(self, n):
+        self.light_range += n
+        self.fov_range += n
+        self.map.recalc_fov()
 
     def is_equipped(self, item):
         return item.slot and self.equipment[item.slot] == item
@@ -247,6 +253,7 @@ class Monster(Mob):
     fov_range = 12
     # n/20 is probability of item drop
     drop_rate = 1
+    fears_light = False
 
     def __init__(self):
         super(Monster, self).__init__()
@@ -299,30 +306,46 @@ class Monster(Mob):
         else:
             return 'lightly wounded'
 
-    def can_see_player(self):
+    # return distance if monster can see player, None if not
+    def see_player(self):
         player = self.map.player
-        fov_range = self.fov_range
-        if player.equipment['l']:
-            fov_range += 5
-        return libtcod.map_is_in_fov(
-            self.map.fov_map, self.x, self.y) and \
-            distance(self.x, self.y, player.x, player.y) < self.fov_range
+        fov_range = self.fov_range + player.light_range
+        if libtcod.map_is_in_fov(
+            self.map.fov_map, self.x, self.y):
+            d = distance(self.x, self.y, player.x, player.y)
+            if d <= fov_range:
+                return d
+        return None
 
-    def act(self):
-        player = self.map.player
-        if player.is_besides(self):
-            self.attack_player()
-            return
-        if self.can_see_player():
-            dx, dy = dir_towards(self.x, self.y,
-                                 player.x, player.y)
-            if self.can_walk(dx, dy):
-                self.walk(dx, dy)
-                return
+    def walk_randomly(self):
         dirs = filter(lambda (dx, dy): self.can_walk(dx, dy),
                       ALL_DIRS)
         if dirs != []:
             self.walk(*choice(dirs))
+
+    def act(self):
+        player = self.map.player
+        d = self.see_player()
+        if d:
+            dx, dy = dir_towards(self.x, self.y,
+                                 player.x, player.y)
+            if player.light_range > 0 and self.fears_light:
+                if self.can_walk(-dx, -dy):
+                    self.walk(-dx, -dy)
+                elif player.is_besides(self):
+                    self.attack_player()
+            else:
+                if player.is_besides(self):
+                    self.attack_player()
+                elif self.can_walk(dx, dy):
+                    self.walk(dx, dy)
+                else:
+                    self.walk_randomly()
+        else:
+            self.walk_randomly()
+
+        dirs = filter(lambda (dx, dy): self.can_walk(dx, dy),
+                      ALL_DIRS)
 
     def attack_player(self):
         player = self.map.player
@@ -348,6 +371,7 @@ class Bat(Monster):
     max_hp = 3
     speed = 2
     dice = 1, 3, 0
+    fears_light = True
     level = 1
 
 class Goblin(Monster):
