@@ -80,7 +80,6 @@ class Map(object):
                 return n
             if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
                 return n
-            print mcls, x, y
             mcls().put(self, x, y)
             n -= 1
             dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -89,7 +88,6 @@ class Map(object):
                 n = flood(x+dx, y+dy, n)
             return n
         flood(x, y, mcls.multi)
-        print '----'
 
     def random_empty_tile(self, no_mob=False, not_seen=False):
         while True:
