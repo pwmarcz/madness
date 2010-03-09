@@ -82,7 +82,7 @@ class Player(Mob):
         self.sanity = MAX_SANITY
         self.max_hp = 15
         self.hp = self.max_hp
-        self.items = [Torch()]
+        self.items = [Torch(), SwordHax()]
         self.equipment = dict((slot, None) for slot in SLOTS)
         self.fov_range = 3
         self.light_range = 0
@@ -334,6 +334,8 @@ class Monster(Mob):
                     self.walk(-dx, -dy)
                 elif player.is_besides(self):
                     self.attack_player()
+                else:
+                    self.walk_randomly()
             else:
                 if player.is_besides(self):
                     self.attack_player()

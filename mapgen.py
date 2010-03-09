@@ -67,15 +67,18 @@ def generate_map():
     path = libtcod.path_new_using_function(
         MAP_W, MAP_H, corridor_path_func, arr, 0.0)
 
-    for i in range(len(rooms)-1):
-        x1, y1, _, _ = rooms[i]
-        x2, y2, _, _ = rooms[i+1]
-        libtcod.path_compute(path, x1+1, y1+1, x2+1, y2+1)
+    def connect(x1, y1, x2, y2):
+        libtcod.path_compute(path, x1, y1, x2, y2)
         for i in range(libtcod.path_size(path)):
             x, y = libtcod.path_get(path, i)
             c = arr[x][y]
             if c == '#' or c == ' ':
                 arr[x][y] = '.'
+
+    for i in range(len(rooms)-1):
+        x1, y1, w1, h1 = rooms[i]
+        x2, y2, w2, h2 = rooms[i+1]
+        connect(x1+w1/2, y1+h1/2, x2+w2/2, y2+h2/2)
 
     #print_array(arr)
 

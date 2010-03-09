@@ -54,8 +54,7 @@ def _draw_map(m, con):
                 c, color = tile.visible_glyph
                 d = distance(x, y, m.player.x, m.player.y)
                 if d > m.player.light_range + 1:
-                    color = libtcod.color_lerp(color, libtcod.dark_grey,
-                                               0.6)
+                    color *= 0.4
                 color = insanize_color(color, GAME.player.sanity)
             else:
                 c, _ = tile.known_glyph
