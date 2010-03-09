@@ -11,6 +11,8 @@ STATUS_H = 10
 INV_W = SCREEN_W
 INV_H = INVENTORY_SIZE + 3
 
+FONT_INDEX = 0
+
 def init(game):
     global CON_MAP, CON_BUFFER, CON_STATUS, CON_INV, MESSAGES, GAME
     GAME = game
@@ -54,7 +56,7 @@ def _draw_map(m, con):
                 c, color = tile.visible_glyph
                 d = distance(x, y, m.player.x, m.player.y)
                 if d > m.player.light_range + 1:
-                    color *= 0.4
+                    color *= 0.6
                 color = insanize_color(color, GAME.player.sanity)
             else:
                 c, _ = tile.known_glyph
@@ -68,7 +70,7 @@ def _draw_status(con):
     status = [
         'Dlvl: %d' % GAME.map.level,
         '',
-        'L%d%s' % (GAME.player.level, ' [wizard mode]' if WIZARD else ''),
+        'L%d%s' % (GAME.player.level, ' [wizard mode]' if GAME.wizard else ''),
         'HP:     %d/%d' % (GAME.player.hp, GAME.player.max_hp),
         'Armor:  %d' % GAME.player.armor,
         'Sanity: %d' % GAME.player.sanity,

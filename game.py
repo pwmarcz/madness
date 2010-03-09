@@ -36,8 +36,8 @@ class Quit(Exception):
     pass
 
 class Game(object):
-    def __init__(self):
-        pass
+    def __init__(self, wizard):
+        self.wizard = wizard
 
     def play(self):
         ui.init(self)
@@ -47,7 +47,7 @@ class Game(object):
         ui.close()
 
     def start(self):
-        self.player = Player()
+        self.player = Player(self.wizard)
         self.turns = 0
         ui.message('Welcome to Madness!')
         ui.message('Press ? for help.')
@@ -65,7 +65,7 @@ class Game(object):
         try:
             while True:
                 if self.player.death:
-                    if WIZARD:
+                    if self.wizard:
                         if ui.prompt('Die? [yn]', 'yn') == 'n':
                             ui.new_ui_turn()
                             self.player.resurrect()
@@ -150,5 +150,3 @@ class Game(object):
     def cmd_cycle_font(self):
         ui.cycle_font()
 
-if __name__ == '__main__':
-    Game().play()

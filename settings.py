@@ -1,7 +1,5 @@
 import libtcodpy as libtcod
 
-WIZARD = True
-
 INVENTORY_SIZE = 8
 
 SCREEN_W = 80
@@ -20,7 +18,6 @@ FONTS = [
     ('fonts/terminal8x8.png',
      libtcod.FONT_LAYOUT_ASCII_INCOL),
 ]
-FONT_INDEX = 0
 
 VERSION = '0.2'
 TITLE = 'Madness v' + VERSION

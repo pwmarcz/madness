@@ -76,13 +76,16 @@ class Player(Mob):
     glyph = '@', libtcod.white
     regen = 4
 
-    def __init__(self):
+    def __init__(self, wizard):
         super(Player, self).__init__()
         self.level = 1
         self.sanity = MAX_SANITY
         self.max_hp = 15
         self.hp = self.max_hp
-        self.items = [Torch(), SwordHax()]
+        if wizard:
+            self.items = [Torch(), Torch(), SwordHax()]
+        else:
+            self.items = []
         self.equipment = dict((slot, None) for slot in SLOTS)
         self.fov_range = 3
         self.light_range = 0
@@ -383,7 +386,7 @@ class Rat(Monster):
     max_hp = 3
     speed = 0
     dice = 1, 3, 0
-    multi = 10
+    multi = 4
     level = 1
 
 class Goblin(Monster):
@@ -424,10 +427,11 @@ class Orc(Monster):
 
 class Pony(UnrealMonster):
     name = 'pony'
-    glyph = 'u', libtcod.white
+    glyph = rainbow_glyph('u')
     max_hp = 10
     dice = 1, 8, 0
     armor = 2
+    multi = 5
     level = 3
 
 class Unicorn(UnrealMonster):

@@ -67,12 +67,12 @@ class Map(object):
             mcls = random_by_level(level, Monster.ALL)
             self.place_monsters(mcls)
         for i in range(n_items):
-            x, y, tile = self.random_empty_tile()
+            x, y, tile = self.random_empty_tile(no_mob=False)
             item = random_by_level(level, Item.ALL)()
             tile.items.append(item)
 
     def place_monsters(self, mcls):
-        x, y, tile = self.random_empty_tile(no_mob=True)
+        x, y, tile = self.random_empty_tile()
         def flood(x, y, n):
             if n == 0:
                 return n
@@ -80,6 +80,7 @@ class Map(object):
                 return n
             if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
                 return n
+            print mcls, x, y
             mcls().put(self, x, y)
             n -= 1
             dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
@@ -88,8 +89,9 @@ class Map(object):
                 n = flood(x+dx, y+dy, n)
             return n
         flood(x, y, mcls.multi)
+        print '----'
 
-    def random_empty_tile(self, no_mob=False, not_seen=False):
+    def random_empty_tile(self, no_mob=True, not_seen=False):
         while True:
             x, y = randrange(MAP_W), randrange(MAP_H)
             tile = self.tiles[x][y]
