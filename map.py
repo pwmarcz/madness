@@ -64,13 +64,28 @@ class Map(object):
 
     def populate(self, level=1, n_monsters=10, n_items=10):
         for i in range(n_monsters):
-            x, y, tile = self.random_empty_tile(no_mob=True)
-            mon = random_by_level(level, Monster.ALL)()
-            mon.put(self, x, y)
+            mcls = random_by_level(level, Monster.ALL)()
+            self.place_monsters(mcls)
         for i in range(n_items):
             x, y, tile = self.random_empty_tile()
             item = random_by_level(level, Item.ALL)()
             tile.items.append(item)
+
+    def place_monsters(self, mcls):
+        x, y, tile = self.random_empty_tile(no_mob=True)
+        n = mcls.multi
+        def flood(x, y):
+            if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
+                return
+            if n == 0:
+                return
+            mcls().put(self, x, y)
+            n -= 1
+            flood(x+1, y)
+            flood(x-1, y)
+            flood(x, y+1)
+            flood(x, y-1)
+        flood(x, y)
 
     def random_empty_tile(self, no_mob=False, not_seen=False):
         while True:
@@ -92,14 +107,10 @@ class Map(object):
         #elif n <= 3:
         #    self.transform_monster(True)
         elif n <= 5:
-            self.add_unreal_monster()
+            mcls = random_by_level(self.level+3, UnrealMonster.ALL)
+            self.place_monsters(mcls)
         else:
             pass
-
-    def add_unreal_monster(self):
-        mon = random_by_level(self.level+3, UnrealMonster.ALL)()
-        x, y, tile = self.random_empty_tile(not_seen=True, no_mob=True)
-        mon.put(self, x, y)
 
     def transform_monster(self, not_seen):
         def good(mon):

@@ -249,8 +249,9 @@ class Monster(Mob):
     __metaclass__ = Register
     ABSTRACT = True
     real = True
+    multi = 1
 
-    fov_range = 12
+    fov_range = 5
     # n/20 is probability of item drop
     drop_rate = 1
     fears_light = False
@@ -374,6 +375,15 @@ class Bat(Monster):
     speed = 2
     dice = 1, 3, 0
     fears_light = True
+    level = 1
+
+class Rat(Monster):
+    name = 'rat'
+    glyph = 'r', libtcod.dark_orange
+    max_hp = 3
+    speed = 0
+    dice = 1, 3, 0
+    multi = 4
     level = 1
 
 class Goblin(Monster):
