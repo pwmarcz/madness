@@ -180,8 +180,9 @@ def title_screen():
 
 def readkey():
     while True:
-        key = libtcod.console_wait_for_keypress(True)
-        if key.c != 0 and key.c != 0x1b:
+        #key = libtcod.console_wait_for_keypress(True)
+        print key.vk, repr(chr(key.c))
+        if key.c != 0 and chr(key.c) not in '\x1b\n\r\t':
             return chr(key.c)
         elif key.vk != 0:
             return key.vk

@@ -71,7 +71,7 @@ class Game(object):
                             self.player.resurrect()
                             ui.draw_all()
                             continue
-                    ui.prompt('[Press ENTER]', '\n')
+                    ui.prompt('[Press ENTER]', [libtcod.KEY_ENTER])
                     raise Quit()
                 while self.player.action_turns > 0:
                     key = ui.readkey()

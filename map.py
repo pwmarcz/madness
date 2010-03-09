@@ -88,13 +88,12 @@ class Map(object):
         ui.message('[Insane effect of severity %d]' % n)
         if n <= 2:
             ui.message(choice(INSANE_MESSAGES))
-        elif n <= 3:
-            self.transform_monster(True)
+        #elif n <= 3:
+        #    self.transform_monster(True)
         elif n <= 5:
             self.add_unreal_monster()
-        elif n <= 7:
-            for i in range(3):
-                self.transform_monster(False)
+        else:
+            pass
 
     def add_unreal_monster(self):
         mon = random_by_level(self.level+3, UnrealMonster.ALL)(real=False)

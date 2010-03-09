@@ -235,19 +235,23 @@ class Player(Mob):
         if self.sanity <= 0:
             self.sanity = 100
 
+    def is_affected_by_unreal(self):
+        return self.sanity <= 20
+
 class Monster(Mob):
     ALL = []
     __metaclass__ = Register
     ABSTRACT = True
+    real = True
 
     fov_range = 12
     # n/20 is probability of item drop
     drop_rate = 1
 
-    def __init__(self, real=True):
+    def __init__(self):
         super(Monster, self).__init__()
         self.hp = self.max_hp
-        self.real = real
+        #self.real = real
 
     def look_like(self, cls):
         self.name = cls.name
@@ -265,7 +269,7 @@ class Monster(Mob):
         self.remove()
 
     def damage(self, dmg):
-        if not self.real:
+        if not (self.real or self.map.player.is_affected_by_unreal()):
             self.disappear()
             return
         dmg -= self.armor
@@ -328,14 +332,13 @@ class Monster(Mob):
         else:
             ui.message('The %s critically hits you!' % self.name)
             dmg *= 2
-        if self.real:
+        if self.real or player.is_affected_by_unreal():
             player.damage(dmg, self)
 
 class UnrealMonster(Monster):
     ALL = []
     ABSTRACT = True
-    max_hp = 1
-    dice = 1, 1, 1
+    real = False
 
 ##### MONSTERS
 
@@ -386,14 +389,21 @@ class Orc(Monster):
 class Pony(UnrealMonster):
     name = 'pony'
     glyph = 'u', libtcod.white
-    level = 1
+    max_hp = 10
+    dice = 1, 8, 0
+    armor = 2
+    level = 3
 
 class Unicorn(UnrealMonster):
     name = 'unicorn'
     glyph = 'U', libtcod.white
-    level = 3
+    max_hp = 20
+    dice = 1, 10, 0
+    level = 5
 
 class Wookiee(UnrealMonster):
     name = 'Wookiee'
     glyph = 'W', libtcod.dark_orange
-    level = 2
+    max_hp = 7
+    dice = 1, 7, 2
+    level = 3
