@@ -12,10 +12,6 @@ MAP_H = 20
 
 BUFFER_H = 4
 
-#FONT = ('fonts/terminal10x10_gs_tc.png',
-#        libtcod.FONT_LAYOUT_TCOD | libtcod.FONT_TYPE_GREYSCALE)
-#FONT = ('fonts/arial12x12.png',
-#        libtcod.FONT_LAYOUT_TCOD | libtcod.FONT_TYPE_GREYSCALE)
 FONTS = [
     ('fonts/terminal10x18.png',
      libtcod.FONT_LAYOUT_ASCII_INROW),
@@ -26,7 +22,7 @@ FONTS = [
 ]
 FONT_INDEX = 0
 
-VERSION = '0.1'
+VERSION = '0.2'
 TITLE = 'Madness v' + VERSION
 
 TITLE_SCREEN = [

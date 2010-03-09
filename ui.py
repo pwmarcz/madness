@@ -176,6 +176,7 @@ def title_screen():
             s = txt
         libtcod.console_print_center(None, SCREEN_W/2, i+5, libtcod.BKGND_NONE, s)
     libtcod.console_flush()
+    readkey()
 
 def readkey():
     while True:

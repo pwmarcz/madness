@@ -86,6 +86,7 @@ class Map(object):
 
     def insane_effect(self, n):
         ui.message('[Insane effect of severity %d]' % n)
+        return
         if n <= 2:
             ui.message(choice(INSANE_MESSAGES))
         #elif n <= 3:

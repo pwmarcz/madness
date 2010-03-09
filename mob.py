@@ -309,7 +309,7 @@ class Monster(Mob):
     # return distance if monster can see player, None if not
     def see_player(self):
         player = self.map.player
-        fov_range = self.fov_range + player.light_range
+        fov_range = self.fov_range + player.light_range/2
         if libtcod.map_is_in_fov(
             self.map.fov_map, self.x, self.y):
             d = distance(self.x, self.y, player.x, player.y)
