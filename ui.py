@@ -88,10 +88,12 @@ def _draw_messages(m, con):
     start = max(n-BUFFER_H,0)
     T.console_clear(con)
     for i in range(start, n):
-        latest, s = m[i]
+        latest, s, color = m[i]
+        if not latest:
+            color *= 0.6
         T.console_set_foreground_color(
             con,
-            T.white if latest else T.grey)
+            color)
         T.console_print_left(con, 0, i-start, T.BKGND_NONE, s)
 
 def _draw_items(title, items, con):
@@ -142,13 +144,13 @@ def draw_all():
                    None, MAP_W+1, 0)
     T.console_flush()
 
-def message(s):
+def message(s, color=T.white):
     s = s[0].upper() + s[1:]
     print s
-    MESSAGES.append((True, s))
+    MESSAGES.append((True, s, color))
 
 def prompt(s, choices=None):
-    message(s)
+    message(s, T.green)
     draw_all()
     if choices:
         choices = list(choices)
@@ -161,9 +163,9 @@ def prompt(s, choices=None):
 
 def new_ui_turn():
     for i in reversed(range(len(MESSAGES))):
-        latest, s = MESSAGES[i]
+        latest, s, color = MESSAGES[i]
         if latest:
-            MESSAGES[i] = False, s
+            MESSAGES[i] = False, s, color
         else:
             break
 

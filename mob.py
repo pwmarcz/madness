@@ -127,7 +127,8 @@ class Player(Mob):
         hp_inc = roll(2,6,self.level)
         self.max_hp += hp_inc
         self.hp += hp_inc
-        ui.message('Congratulations! You advance to level %d.' % self.level)
+        ui.message('Congratulations! You advance to level %d.' % self.level,
+                   T.yellow)
 
     def change_light_range(self, n):
         self.light_range += n
@@ -177,7 +178,7 @@ class Player(Mob):
         if roll(1, 20) < 20:
             ui.message('You hit the %s.' % mon.name)
         else:
-            ui.message('You critically hit the %s!' % mon.name)
+            ui.message('You critically hit the %s!' % mon.name, T.yellow)
             dmg *= 2
         mon.damage(dmg)
         self.use_energy()
@@ -199,7 +200,7 @@ class Player(Mob):
 
     def pick_up(self, item):
         if len(self.items) == INVENTORY_SIZE:
-            ui.message('You can\'t carry anymore items.')
+            ui.message('You can\'t carry anymore items.', T.red)
             return
         assert item in self.tile.items
         self.tile.items.remove(item)
@@ -245,7 +246,7 @@ class Player(Mob):
     def decrease_sanity(self, n):
         self.sanity -= n
         if self.sanity <= 0:
-            ui.message('Your feel reality slipping away...')
+            ui.message('You feel reality slipping away...')
             self.death = 'insane'
         else:
             if roll(1, 80) > self.sanity:
@@ -394,7 +395,7 @@ class Monster(Mob):
         if roll(1, 20) < 20:
             ui.message('The %s hits you.' % self.name)
         else:
-            ui.message('The %s critically hits you!' % self.name)
+            ui.message('The %s critically hits you!' % self.name, T.yellow)
             dmg *= 2
         if self.real or player.is_affected_by_unreal():
             player.damage(dmg, self)
