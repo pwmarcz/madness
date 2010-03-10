@@ -19,7 +19,7 @@ FONTS = [
      libtcod.FONT_LAYOUT_ASCII_INCOL),
 ]
 
-VERSION = '0.3'
+VERSION = '0.31'
 TITLE = 'Madness v' + VERSION
 
 TITLE_SCREEN = [
