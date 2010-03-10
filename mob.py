@@ -13,6 +13,8 @@ class Mob(object):
     glyph = UNKNOWN_GLYPH
     map = None
 
+    enters_walls = False
+
     # -4 = rests every other turn
     # -1 = rests every 5th turn
     # +1 = extra move every 5th turn
@@ -53,7 +55,8 @@ class Mob(object):
     def can_walk(self, dx, dy):
         destx, desty = self.x+dx, self.y+dy
         tile = self.map.tiles[destx][desty]
-        return tile.walkable and not tile.mob
+        return (tile.walkable or self.enters_walls) and \
+            not tile.mob
 
     def walk(self, dx, dy):
         self.move(self.x+dx, self.y+dy)
@@ -80,12 +83,12 @@ class Player(Mob):
         super(Player, self).__init__()
         self.level = 1
         self.sanity = MAX_SANITY
-        self.max_hp = 15
+        self.max_hp = 25
         self.hp = self.max_hp
 
         import item
         if wizard:
-            self.items = [item.Torch(), item.Torch(), item.SwordHax()]
+            self.items = [item.Torch(), item.Torch(), item.EterniumSword()]
         else:
             self.items = [item.Torch()]
 
@@ -104,19 +107,19 @@ class Player(Mob):
             a, b, c = weapon.dice
         else:
             a, b, c = 1, 3, 0
-        c += self.level
+        c += self.level*2-2
         return a, b, c
 
     def add_exp(self, mob):
-        self.exp += int(1.7 ** mob.level)
+        self.exp += int(1.8 ** mob.level)
         print self.exp
-        new_level = min(int(log(self.exp/3+2, 2)), MAX_CLEVEL)
+        new_level = min(int(log(self.exp/4+2, 2)), MAX_CLEVEL)
         while new_level > self.level:
             self.advance()
 
     def advance(self):
         self.level += 1
-        hp_inc = roll(1,6,2*self.level)
+        hp_inc = roll(2,6,2*self.level)
         self.max_hp += hp_inc
         self.hp += hp_inc
         ui.message('Congratulations! You advance to level %d.' % self.level)
@@ -184,7 +187,9 @@ class Player(Mob):
                 ui.message('You die...')
                 # everything has to look normal?
                 mon.look_normal()
-                self.death = 'killed by a %s' % mon.name
+                self.death = 'killed by %s%s' % (
+                    ('imaginary ' if isinstance(mon, UnrealMonster) else ''),
+                    mon.name)
 
     def pick_up(self, item):
         if len(self.items) == INVENTORY_SIZE:
@@ -205,7 +210,8 @@ class Player(Mob):
         self.use_energy()
 
     def act(self):
-        super(Player, self).act()
+        if not self.death:
+            super(Player, self).act()
         self.action_turns += 1
 
     def use_energy(self):
@@ -227,14 +233,14 @@ class Player(Mob):
             light.turns_left -= 1
             if light.turns_left <= 0:
                 self.extinguish(light)
-        if roll(1, 5) == 1:
-            self.decrease_sanity(roll(1, 2+self.map.level))
+        if roll(1, 15) == 1:
+            self.decrease_sanity(roll(1, max(1, 2-self.map.level)))
 
     def decrease_sanity(self, n):
         self.sanity -= n
         if self.sanity <= 0:
-            ui.message('Your mind is gone!')
-            self.death = 'went insane'
+            ui.message('Your feel reality slipping away...')
+            self.death = 'insane'
         else:
             if roll(1, 130) > self.sanity:
                 severity = roll(1, (10-self.sanity/10))
@@ -248,7 +254,7 @@ class Player(Mob):
             self.sanity = 100
 
     def is_affected_by_unreal(self):
-        return self.sanity <= 20
+        return self.sanity <= 36
 
 class Monster(Mob):
     ALL = []
@@ -377,7 +383,7 @@ class UnrealMonster(Monster):
 class Rat(Monster):
     name = 'rat'
     glyph = 'r', T.dark_orange
-    max_hp = 3
+    max_hp = 5
     speed = 0
     dice = 1, 3, 0
     multi = 4
@@ -386,7 +392,7 @@ class Rat(Monster):
 class Bat(Monster):
     name = 'bat'
     glyph = 'B', T.dark_orange
-    max_hp = 3
+    max_hp = 5
     speed = 2
     dice = 1, 3, 0
     fears_light = True
@@ -395,9 +401,9 @@ class Bat(Monster):
 class Goblin(Monster):
     name = 'goblin'
     glyph = 'g', T.light_blue
-    max_hp = 6
+    max_hp = 7
     dice = 1, 6, 0
-    armor = 3
+    armor = 2
     level = 2
 
 class Orc(Monster):
@@ -405,7 +411,7 @@ class Orc(Monster):
     glyph = 'o', T.red
     max_hp = 10
     dice = 1, 6, 1
-    armor = 5
+    armor = 3
     level = 3
 
 class MadAdventurer(Monster):
@@ -413,7 +419,7 @@ class MadAdventurer(Monster):
     glyph = '@', T.violet
     max_hp = 15
     dice = 1, 6, 3
-    armor = 6
+    armor = 5
     drop_rate = 15
     level = 4
 
@@ -431,7 +437,7 @@ class KillerBat(Monster):
     glyph = 'B', T.orange
     max_hp = 5
     speed = 2
-    dice = 1, 10, 0
+    dice = 2, 8, 5
     fears_light = True
     multi = 3
     level = 4
@@ -440,7 +446,7 @@ class Dragon(Monster):
     name = 'dragon'
     glyph = rainbow_glyph('D')
     max_hp = 20
-    dice = 1, 10, 0
+    dice = 2, 8, 4
     drop_rate = 30
     level = 5
 
@@ -449,14 +455,14 @@ class Giant(Monster):
     glyph = 'H', T.light_grey
     max_hp = 20
     speed = -2
-    dice = 1, 10, 2
+    dice = 2, 8, 2
     level = 5
 
 ##### UNREAL MONSTERS
 
 class Butterfly(UnrealMonster):
     name = 'butterfly'
-    glyph = rainbow_glyph('B')
+    glyph = rainbow_glyph('b')
     max_hp = 2
     speed = 3
     dice = 1, 3, 0
@@ -470,6 +476,7 @@ class Ghost(UnrealMonster):
     max_hp = 6
     dice = 1, 7, 0
     fears_light = True
+    enters_walls = True
     level = 2
 
 class LittlePony(UnrealMonster):

@@ -35,7 +35,13 @@ def describe_dice(a, b, c):
         return '%dd%d+%d' % (a, b, c)
 
 def random_by_level(level, items):
-    #items = filter(lambda a: a.level <= level, items)
+    if roll(1, 1000) == 1: # out of depth
+        max_level = 100
+        min_level = 3
+    else:
+        max_level = level/2+roll(1,2)
+        min_level = roll(1, max(1, max_level-1))
+    items = filter(lambda a: min_level <= a.level <= max_level, items)
     return choice(items)
 
 def array(w, h, func):

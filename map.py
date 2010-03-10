@@ -25,7 +25,7 @@ class Map(object):
                                            tile.walkable,
                                            tile.transparent)
 
-        self.populate(level+1)
+        self.populate()
 
     def find_tile(self, func):
         for x in range(MAP_W):
@@ -62,13 +62,15 @@ class Map(object):
                     t%(6-min(mob.speed, MAX_SPEED)) == 0:
                 mob.act()
 
-    def populate(self, level=1, n_monsters=10, n_items=10):
+    def populate(self):
+        n_monsters = 3 + roll(2, self.level)
+        n_items = n_monsters
         for i in range(n_monsters):
-            mcls = random_by_level(level, Monster.ALL)
+            mcls = random_by_level(self.level, Monster.ALL)
             self.place_monsters(mcls)
         for i in range(n_items):
             x, y, tile = self.random_empty_tile(no_mob=False)
-            item = random_by_level(level, Item.ALL)()
+            item = random_by_level(self.level, Item.ALL)()
             tile.items.append(item)
 
     def place_monsters(self, mcls, *args, **kwargs):
@@ -76,9 +78,10 @@ class Map(object):
         def flood(x, y, n):
             if n == 0:
                 return n
-            if self.tiles[x][y].mob:
-                return n
             if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
+                return n
+            tile = self.tiles[x][y]
+            if tile.mob or not tile.walkable:
                 return n
             print mcls, x, y
             mcls().put(self, x, y)

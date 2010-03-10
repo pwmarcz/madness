@@ -97,55 +97,73 @@ class Torch(LightSource):
     name = 'torch'
     glyph = '/', T.dark_orange
     level = 1
-    turns = 50
-    light_range = 5
+    turns = 250
+    light_range = 6
 
 class Lamp(LightSource):
     name = 'lamp'
     glyph = ']', T.yellow
-    level = 4
-    turns = 100
+    level = 3
+    turns = 350
     light_range = 10
 
 ###### WEAPONS
 
-class HandAxe(Weapon):
-    name = 'hand axe'
-    glyph = '(', T.grey
-    dice = 1, 6, 0
+class Dagger(Weapon):
+    name = 'dagger'
+    glyph = '(', T.light_grey
+    dice = 1, 4, 0
+    level = 1
+
+class Stick(Weapon):
+    name = 'stick'
+    glyph = '(', T.dark_orange
+    dice = 1, 3, 1
     level = 1
 
 class ShortSword(Weapon):
     name = 'short sword'
-    glyph = '(', T.grey
+    glyph = '(', T.light_grey
     dice = 1, 6, 0
-    level = 1
+    level = 2
+
+class HandAxe(Weapon):
+    name = 'hand axe'
+    glyph = '(', T.grey
+    dice = 1, 6, 1
+    level = 2
 
 class Spear(Weapon):
     name = 'spear'
-    glyph = '(', T.light_grey
+    glyph = '(', T.light_sky
     dice = 1, 8, 2
-    level = 2
-
-class Anvil(Weapon):
-    name = 'anvil'
-    glyph = '(', T.dark_grey
-    dice = 1, 12, 2
     level = 3
-    speed = -2
 
 class LongSword(Weapon):
     name = 'long sword'
+    glyph = '(', T.cyan
+    dice = 1, 10, 0
+    level = 3
+
+class TwoSword(Weapon):
+    name = 'two-handed sword'
     glyph = '(', T.light_grey
-    dice = 1, 8, 4
+    dice = 2, 6, 0
+    speed = -1
     level = 4
 
-class SwordHax(Weapon):
-    name = 'sword of hax'
+class Halberd(Weapon):
+    name = 'halberd'
+    glyph = '(', T.light_grey
+    dice = 3, 4, 0
+    speed = -1
+    level = 4
+
+class EterniumSword(Weapon):
+    name = 'eternium sword'
     glyph = '(', T.white
-    dice = 2, 20, 20
-    armor = 5
-    level = 1
+    dice = 4, 6, 0
+    level = 5
 
 ##### BOOTS
 
@@ -154,7 +172,7 @@ class LightBoots(Boots):
     slot = 'b'
     glyph = '[', T.dark_orange
     armor = 1
-    level = 1
+    level = 2
 
 class HeavyBoots(Boots):
     name = 'heavy boots'
@@ -166,7 +184,7 @@ class HeavyBoots(Boots):
 class BootsSpeed(Boots):
     name = 'boots of speed'
     glyph = '[', T.light_blue
-    speed = 2
+    speed = 3
     level = 5
 
 ##### ARMOR
@@ -187,7 +205,6 @@ class RingMail(Armor):
 class PlateMail(Armor):
     name = 'plate mail'
     glyph = '[', T.white
-    armor = 10
+    armor = 6
     speed = -2
     level = 5
-

@@ -35,10 +35,11 @@ HELP_TEXT = '''\
 --- Madness - a roguelike ---
 
   Your task is simple: reach level 10 of the dungeon and defeat the horrible
-<boss>. Be careful - those who stay in these caves too long suffer fate worse
-than death...
+<boss>. Be advised - those are strange dungeons. If you stay log enough, you
+may see things that aren't there. If you stay longer, these things may even
+kill you...
 
-  You have a torch in your backpack. It may prove useful.
+  You start with a torch in your backpack. It may prove useful.
 
 --- Keybindings ---
 Move:  numpad,             Inventory:    i
