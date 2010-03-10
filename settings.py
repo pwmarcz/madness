@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 
-INVENTORY_SIZE = 8
+INVENTORY_SIZE = 9
 
 SCREEN_W = 80
 SCREEN_H = 25

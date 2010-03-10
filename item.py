@@ -226,11 +226,11 @@ class PlateMail(Armor):
 class PotionSanity(Potion):
     glyph = '!', T.blue
     name = 'potion of sanity'
-    level = 3
+    level = 2
 
     def on_use(self, player):
         super(PotionSanity, self).on_use(player)
-        player.restore_sanity(50)
+        player.restore_sanity(70)
         player.map.clear_insane_effects()
 
 class PotionHealing(Potion):
