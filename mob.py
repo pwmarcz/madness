@@ -240,7 +240,7 @@ class Player(Mob):
             light.turns_left -= 1
             if light.turns_left <= 0:
                 self.extinguish(light)
-        if roll(1, 8) == 1:
+        if roll(1, 10) == 1:
             self.decrease_sanity(roll(1, max(1, self.map.level/2-3)))
 
     def decrease_sanity(self, n):
