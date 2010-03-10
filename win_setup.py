@@ -1,6 +1,8 @@
 from distutils.core import setup
 import py2exe
 
+# Run 'python win_setup.py py2exe'
+
 opts = {
     "py2exe": {
         "ascii": True,
@@ -13,4 +15,4 @@ opts = {
     }
 }
 
-setup(options=opts, windows=['game.py'], zipfile=None)
+setup(options=opts, windows=['madness.py'], zipfile=None)

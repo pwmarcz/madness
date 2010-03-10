@@ -55,7 +55,7 @@ def generate_map(level):
 
     costs = [(5, 40, 1),
              (5, 1, 2),
-             (5, 40, 40)][3*level/MAX_DLEVEL-1]
+             (5, 40, 40)][3*level/(MAX_DLEVEL+1)]
 
     def corridor_path_func(x1, y1, x2, y2, data):
         if x2 == 0 or x2 == MAP_W-1 or y2 == 0 or y2 == MAP_H-1:
