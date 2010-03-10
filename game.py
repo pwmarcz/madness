@@ -1,7 +1,6 @@
 import libtcodpy as T
 
 from settings import *
-from mapgen import generate_map
 from map import *
 from mob import *
 from item import *
@@ -55,7 +54,7 @@ class Game(object):
 
     def start_map(self, level):
         # some message on enter?
-        self.map = Map(level, generate_map())
+        self.map = Map(level)
 
         x, y, _ = self.map.random_empty_tile()
         self.player.put(self.map, x, y)
@@ -99,10 +98,10 @@ class Game(object):
     def cmd_walk(self, dx, dy):
         destx, desty = self.player.x+dx, self.player.y+dy
         tile = self.map.tiles[destx][desty]
-        if not tile.walkable:
-            pass
-        elif tile.mob:
+        if tile.mob:
             self.player.attack(tile.mob)
+        elif not tile.walkable:
+            pass
         else:
             self.player.walk(dx, dy)
 

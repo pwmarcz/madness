@@ -3,6 +3,7 @@ import libtcodpy as T
 from settings import *
 from util import *
 from random import choice
+import ui
 
 class Item(object):
     ALL = []
@@ -50,6 +51,9 @@ class Item(object):
         player.speed -= self.speed
         player.armor -= self.armor
 
+    def on_use(self, player):
+        ui.message('You don\'t know how to use %s.' % self.descr)
+
 class LightSource(Item):
     ABSTRACT = True
     slot = 'l'
@@ -90,6 +94,13 @@ class Boots(Item):
 class Armor(Item):
     ABSTRACT = True
     slot = 'a'
+
+class Potion(Item):
+    ABSTRACT = True
+
+    def on_use(self, player):
+        ui.message('You drink the %s.' % self.name)
+        player.items.remove(self)
 
 ##### LIGHT SOURCES
 
@@ -200,6 +211,7 @@ class RingMail(Armor):
     name = 'ring mail'
     glyph = '[', T.grey
     armor = 4
+    speed = -1
     level = 3
 
 class PlateMail(Armor):
@@ -208,3 +220,25 @@ class PlateMail(Armor):
     armor = 6
     speed = -2
     level = 5
+
+##### POTIONS
+
+class PotionSanity(Potion):
+    glyph = '!', T.blue
+    name = 'potion of sanity'
+    level = 3
+
+    def on_use(self, player):
+        super(PotionSanity, self).on_use(player)
+        player.restore_sanity(50)
+        player.map.clear_insane_effects()
+
+class PotionHealing(Potion):
+    glyph = '!', T.green
+    name = 'potion of health'
+    level = 3
+
+    def on_use(self, player):
+        super(PotionHealing, self).on_use(player)
+        ui.message('You feel healed.')
+        player.hp = player.max_hp

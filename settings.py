@@ -19,7 +19,7 @@ FONTS = [
      libtcod.FONT_LAYOUT_ASCII_INCOL),
 ]
 
-VERSION = '0.2'
+VERSION = '0.3'
 TITLE = 'Madness v' + VERSION
 
 TITLE_SCREEN = [
@@ -39,7 +39,8 @@ HELP_TEXT = '''\
 may see things that aren't there. If you stay longer, these things may even
 kill you...
 
-  You start with a torch in your backpack. It may prove useful.
+  You start with a torch in your backpack. It may prove useful - some
+creatures don't like light.
 
 --- Keybindings ---
 Move:  numpad,             Inventory:    i
@@ -58,7 +59,8 @@ MAX_SANITY = 100
 MAX_SPEED = 5
 MIN_SPEED = -4
 
-MAX_CLEVEL = 10
+MAX_CLEVEL = 6
+MAX_DLEVEL = 10
 
 INVENTORY_SLOTS = {
     'w': 'wielded',

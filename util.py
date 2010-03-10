@@ -40,7 +40,7 @@ def random_by_level(level, items):
         min_level = 3
     else:
         max_level = level/2+roll(1,2)
-        min_level = roll(1, max(1, max_level-1))
+        min_level = 1 #roll(1, max(1, max_level-1))
     items = filter(lambda a: min_level <= a.level <= max_level, items)
     return choice(items)
 

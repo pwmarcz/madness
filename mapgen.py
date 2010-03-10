@@ -4,18 +4,17 @@ from sys import stdout
 import libtcodpy as T
 
 from settings import *
-from map import *
 from util import *
 
-TILE_TABLE = {
-    '.': FloorTile,
-    '#': WoodWallTile,
-    ' ': WallTile,
-    '>': StairDownTile,
-    '<': StairUpTile,
-}
-
 def array_to_tiles(arr):
+    import map
+    TILE_TABLE = {
+        '.': map.FloorTile,
+        '#': map.WoodWallTile,
+        ' ': map.WallTile,
+        '>': map.StairDownTile,
+        '<': map.StairUpTile,
+        }
     return [[TILE_TABLE[c]() for c in line] for line in arr]
 
 def try_put_room(arr, w, h):
@@ -41,18 +40,7 @@ def print_array(arr):
             stdout.write(line[y])
         stdout.write('\n')
 
-def corridor_path_func(x1, y1, x2, y2, arr):
-    if x2 == 0 or x2 == MAP_W-1 or y2 == 0 or y2 == MAP_H-1:
-        return 0
-    c = arr[x2][y2]
-    if c == ' ':
-        return 5
-    elif c == '#':
-        return 40
-    else:
-        return 1
-
-def generate_map():
+def generate_map(level):
     arr = array(MAP_W, MAP_H, lambda: ' ')
     rooms = []
     for i in xrange(500):
@@ -62,10 +50,27 @@ def generate_map():
             rooms.append(room)
 
     #randomly_place(arr, '<')
-    randomly_place(arr, '>')
+    if level < MAX_DLEVEL:
+        randomly_place(arr, '>')
+
+    costs = [(5, 40, 1),
+             (5, 1, 2),
+             (5, 40, 40)][3*level/MAX_DLEVEL-1]
+
+    def corridor_path_func(x1, y1, x2, y2, data):
+        if x2 == 0 or x2 == MAP_W-1 or y2 == 0 or y2 == MAP_H-1:
+            return 0
+        c = arr[x2][y2]
+        if c == ' ':
+            return costs[0]
+        elif c == '#':
+            return costs[1]
+        else:
+            return costs[2]
+
 
     path = T.path_new_using_function(
-        MAP_W, MAP_H, corridor_path_func, arr, 0.0)
+        MAP_W, MAP_H, corridor_path_func, None, 0.0)
 
     def connect(x1, y1, x2, y2):
         T.path_compute(path, x1, y1, x2, y2)

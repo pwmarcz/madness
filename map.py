@@ -4,13 +4,14 @@ import libtcodpy as T
 
 from mob import Monster, UnrealMonster, Player
 from item import Item
+from mapgen import generate_map
 from settings import *
 from util import *
 import ui
 
 class Map(object):
-    def __init__(self, level, tiles):
-        self.tiles = tiles
+    def __init__(self, level):
+        self.tiles = generate_map(level)
         self.level = level
 
         self.player = None
@@ -64,7 +65,7 @@ class Map(object):
 
     def populate(self):
         n_monsters = 3 + roll(2, self.level)
-        n_items = n_monsters
+        n_items = roll(1, 3)
         for i in range(n_monsters):
             mcls = random_by_level(self.level, Monster.ALL)
             self.place_monsters(mcls)
@@ -108,8 +109,13 @@ class Map(object):
 
     def insane_effect(self, n):
         #ui.message('[Insane effect of severity %d]' % n)
-        mcls = random_by_level((self.level+n)/2, UnrealMonster.ALL)
-        self.place_monsters(mcls, not_seen=True)
+        for i in range(n):
+            mcls = random_by_level(self.level, UnrealMonster.ALL)
+            self.place_monsters(mcls, not_seen=True)
+
+    def clear_insane_effects(self):
+        for mon in filter(lambda m: isinstance(m, UnrealMonster), self.mobs):
+            mon.remove()
 
 class Tile(object):
     walkable = True
