@@ -5,7 +5,7 @@ import libtcodpy as T
 from settings import *
 from util import distance, describe_dice
 
-STATUS_W = SCREEN_W-MAP_W-1
+STATUS_W = SCREEN_W-MAP_W-2
 STATUS_H = 10
 INV_W = SCREEN_W
 INV_H = INVENTORY_SIZE + 3
@@ -118,7 +118,7 @@ def _draw_items(title, items, con):
 def draw_inventory(title='Inventory', items=None):
     _draw_items(title, items or GAME.player.items, CON_INV)
     T.console_blit(CON_INV, 0, 0, INV_W, INV_H,
-                   None, 0, 0)
+                   None, 1, 1)
     T.console_flush()
 
 def select_item(title, items):
@@ -137,11 +137,11 @@ def draw_all():
     _draw_messages(MESSAGES, CON_BUFFER)
     _draw_status(CON_STATUS)
     T.console_blit(CON_MAP, 0, 0, MAP_W, MAP_H,
-                   None, 0, 0)
+                   None, 1, 1)
     T.console_blit(CON_BUFFER, 0, 0, SCREEN_W, BUFFER_H,
-                   None, 0, MAP_H)
+                   None, 1, MAP_H+1)
     T.console_blit(CON_STATUS, 0, 0, STATUS_W, STATUS_H,
-                   None, MAP_W+1, 0)
+                   None, MAP_W+1, 1)
     T.console_flush()
 
 def message(s, color=T.white):
