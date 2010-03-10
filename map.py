@@ -2,7 +2,7 @@ from random import randrange, choice, shuffle
 
 import libtcodpy as T
 
-from mob import Monster, UnrealMonster, Player
+from mob import Monster, UnrealMonster, Player, Boss
 from item import Item
 from mapgen import generate_map
 from settings import *
@@ -27,6 +27,8 @@ class Map(object):
                                            tile.transparent)
 
         self.populate()
+        if self.level == MAX_DLEVEL:
+            self.place_monsters(Boss)
 
     def find_tile(self, func):
         for x in range(MAP_W):
@@ -74,26 +76,25 @@ class Map(object):
             item = random_by_level(self.level, Item.ALL)()
             tile.items.append(item)
 
+    def flood(self, x, y, mcls, n):
+        if n == 0:
+            return n
+        if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
+            return n
+        tile = self.tiles[x][y]
+        if tile.mob or not tile.walkable:
+            return n
+        mcls().put(self, x, y)
+        n -= 1
+        dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        shuffle(dirs)
+        for dx, dy in dirs:
+            n = self.flood(x+dx, y+dy, mcls, n)
+        return n
+
     def place_monsters(self, mcls, *args, **kwargs):
         x, y, tile = self.random_empty_tile(*args, **kwargs)
-        def flood(x, y, n):
-            if n == 0:
-                return n
-            if x < 0 or x >= MAP_W or y < 0 or y >= MAP_H:
-                return n
-            tile = self.tiles[x][y]
-            if tile.mob or not tile.walkable:
-                return n
-            print mcls, x, y
-            mcls().put(self, x, y)
-            n -= 1
-            dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
-            shuffle(dirs)
-            for dx, dy in dirs:
-                n = flood(x+dx, y+dy, n)
-            return n
-        flood(x, y, mcls.multi)
-        print '----'
+        self.flood(x, y, mcls, mcls.multi)
 
     def random_empty_tile(self, no_mob=True, not_seen=False):
         while True:

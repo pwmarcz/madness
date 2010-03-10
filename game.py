@@ -23,6 +23,7 @@ KEYS = [
     (['>'], 'descend'),
     (['?'], 'help'),
     ([T.KEY_F10], 'cycle_font'),
+    (['W'], 'wizard'),
 ]
 
 def decode_key(key):
@@ -72,6 +73,11 @@ class Game(object):
                             continue
                     ui.prompt(
                         '[Game over: %s. Press ENTER]' % self.player.death,
+                        [T.KEY_ENTER])
+                    raise Quit()
+                if self.player.won:
+                    ui.prompt(
+                        'Congratulations! You have won. Press ENTER',
                         [T.KEY_ENTER])
                     raise Quit()
                 while self.player.action_turns > 0:
@@ -153,3 +159,7 @@ class Game(object):
 
     def cmd_help(self):
         ui.help_screen()
+
+    def cmd_wizard(self):
+        if self.wizard and self.map.level < MAX_DLEVEL:
+            self.start_map(self.map.level+1)

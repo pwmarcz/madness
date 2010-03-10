@@ -34,10 +34,10 @@ TITLE_SCREEN = [
 HELP_TEXT = '''\
 --- Madness - a roguelike ---
 
-  Your task is simple: reach level 10 of the dungeon and defeat the horrible
-<boss>. Be advised - those are strange dungeons. If you stay log enough, you
-may see things that aren't there. If you stay longer, these things may even
-kill you...
+  Your task is simple: reach level 10 of the dungeon and defeat the evil
+Dungeon Master. Be advised - these are strange dungeons: if you stay long
+enough, you may start seeing things that aren't there. If you stay longer,
+these things may even kill you...
 
   You start with a torch in your backpack. It may prove useful - some
 creatures don't like light.

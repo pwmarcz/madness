@@ -195,6 +195,9 @@ def readkey():
                       T.KEY_CAPSLOCK]:
             continue
         if key.c != 0 and chr(key.c) not in '\x1b\n\r\t':
-            return chr(key.c)
+            s = chr(key.c)
+            if key.shift:
+                s = s.upper()
+            return s
         elif key.vk != 0:
             return key.vk

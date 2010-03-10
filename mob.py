@@ -1,4 +1,4 @@
-from random import choice, random
+from random import choice, random, shuffle
 from math import log
 
 import libtcodpy as T
@@ -103,6 +103,7 @@ class Player(Mob):
         self.armor = 0
         self.exp = 0
         self.death = None
+        self.won = False
 
     @property
     def dice(self):
@@ -239,7 +240,7 @@ class Player(Mob):
             if light.turns_left <= 0:
                 self.extinguish(light)
         if roll(1, 15) == 1:
-            self.decrease_sanity(roll(1, max(1, 2-self.map.level)))
+            self.decrease_sanity(roll(1, max(1, self.map.level/2-3)))
 
     def decrease_sanity(self, n):
         self.sanity -= n
@@ -309,14 +310,18 @@ class Monster(Mob):
         self.hp -= dmg
         if self.hp <= 0:
             if roll(1, 30) <= self.drop_rate:
-                item = random_by_level(self.level, Item.ALL)()
+                item = random_by_level(self.map.level, Item.ALL)()
                 self.tile.items.append(item)
-            self.look_normal()
-            ui.message('The %s dies!' % self.name)
-            self.remove()
-            self.map.player.add_exp(self)
+            self.die()
         else:
             ui.message('The %s is %s.' % (self.name, self.get_wounds()))
+
+    def die(self):
+        self.look_normal()
+        if self.map.is_visible(self.x, self.y):
+            ui.message('The %s dies!' % self.name)
+        self.remove()
+        self.map.player.add_exp(self)
 
     def get_wounds(self):
         p = 100*self.hp/self.max_hp
@@ -345,10 +350,25 @@ class Monster(Mob):
         if dirs != []:
             self.walk(*choice(dirs))
 
+    def summon_monsters(self):
+        if self.map.is_visible(self.x, self.y):
+            ui.message('The %s summons monsters!' % self.name)
+        else:
+            ui.message('You hear arcane mumbling.')
+        n = roll(2, 3)
+        mcls = random_by_level(self.map.level, Monster.ALL)
+        dirs = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+        shuffle(dirs)
+        for dx, dy in dirs:
+            n = self.map.flood(self.x+dx, self.y+dy, mcls, n)
+
     def act(self):
         player = self.map.player
         d = self.see_player()
         if d:
+            if self.summoner and roll(1, 6) == 1:
+                self.summon_monsters()
+                return
             dx, dy = dir_towards(self.x, self.y,
                                  player.x, player.y)
             if player.light_range > 0 and self.fears_light:
@@ -367,9 +387,6 @@ class Monster(Mob):
                     self.walk_randomly()
         else:
             self.walk_randomly()
-
-        dirs = filter(lambda (dx, dy): self.can_walk(dx, dy),
-                      ALL_DIRS)
 
     def attack_player(self):
         player = self.map.player
@@ -417,7 +434,7 @@ class Goblin(Monster):
     glyph = 'g', T.light_blue
     max_hp = 7
     dice = 1, 6, 0
-    armor = 3
+    armor = 2
     level = 2
 
 class Orc(Monster):
@@ -451,7 +468,7 @@ class KillerBat(Monster):
     glyph = 'B', T.orange
     max_hp = 15
     speed = 2
-    dice = 2, 8, 6
+    dice = 2, 8, 2
     fears_light = True
     multi = 5
     armor = 4
@@ -461,7 +478,7 @@ class Dragon(Monster):
     name = 'dragon'
     glyph = rainbow_glyph('D')
     max_hp = 30
-    dice = 3, 8, 4
+    dice = 3, 6, 2
     drop_rate = 30
     armor = 7
     level = 5
@@ -471,19 +488,24 @@ class Giant(Monster):
     glyph = 'H', T.light_grey
     max_hp = 30
     speed = -2
-    dice = 3, 7, 0
+    dice = 3, 6, 0
     armor = 6
     level = 5
 
 class Boss(Monster):
     ABSTRACT = True # suppress random generation
-    name = '<boss>'
+    name = 'Dungeon Master'
+    glyph = '@', T.grey
     max_hp = 40
-    dice = 3, 4, 4
+    dice = 3, 3, 4
     sanity_dice = 1, 6, 0
     armor = 5
     summoner = True
     level = 6
+
+    def die(self):
+        super(Boss, self).die()
+        self.map.player.won = True
 
 ##### UNREAL MONSTERS
 
