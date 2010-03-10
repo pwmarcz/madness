@@ -59,7 +59,7 @@ def _draw_map(m, con):
                 color = insanize_color(color, GAME.player.sanity)
             else:
                 c, _ = tile.known_glyph
-                color = T.dark_grey
+                color = T.grey*(GAME.player.sanity/100.0)
             T.console_put_char_ex(con, x, y, ord(c),
                                   color, T.black)
 
