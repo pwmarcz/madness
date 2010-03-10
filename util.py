@@ -35,7 +35,7 @@ def describe_dice(a, b, c):
         return '%dd%d+%d' % (a, b, c)
 
 def random_by_level(level, items):
-    items = filter(lambda a: a.level <= level, items)
+    #items = filter(lambda a: a.level <= level, items)
     return choice(items)
 
 def array(w, h, func):
@@ -53,7 +53,9 @@ class Register(type):
 RAINBOW_COLORS = [T.red, T.blue, T.green, T.yellow,
                   T.pink, T.white]
 
-def rainbow_glyph(c):
+def rainbow_glyph(c, remember=True):
+    if not remember:
+        return property(lambda self: (c, choice(RAINBOW_COLORS)))
     @property
     def glyph(self):
         if not hasattr(self, 'rainbow_glyph'):

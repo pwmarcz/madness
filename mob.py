@@ -258,7 +258,7 @@ class Monster(Mob):
     multi = 1
 
     fov_range = 5
-    # n/20 is probability of item drop
+    # n/30 is probability of item drop
     drop_rate = 1
     fears_light = False
 
@@ -292,7 +292,7 @@ class Monster(Mob):
             return
         self.hp -= dmg
         if self.hp <= 0:
-            if roll(1, 20) <= self.drop_rate:
+            if roll(1, 30) <= self.drop_rate:
                 item = random_by_level(self.level, Item.ALL)()
                 self.tile.items.append(item)
             self.look_normal()
@@ -370,17 +370,9 @@ class UnrealMonster(Monster):
     ALL = []
     ABSTRACT = True
     real = False
+    drop_rate = 0
 
 ##### MONSTERS
-
-class Bat(Monster):
-    name = 'bat'
-    glyph = 'B', T.dark_orange
-    max_hp = 3
-    speed = 2
-    dice = 1, 3, 0
-    fears_light = True
-    level = 1
 
 class Rat(Monster):
     name = 'rat'
@@ -391,61 +383,130 @@ class Rat(Monster):
     multi = 4
     level = 1
 
+class Bat(Monster):
+    name = 'bat'
+    glyph = 'B', T.dark_orange
+    max_hp = 3
+    speed = 2
+    dice = 1, 3, 0
+    fears_light = True
+    level = 1
+
 class Goblin(Monster):
     name = 'goblin'
     glyph = 'g', T.light_blue
-    max_hp = 5
+    max_hp = 6
     dice = 1, 6, 0
     armor = 3
     level = 2
+
+class Orc(Monster):
+    name = 'orc'
+    glyph = 'o', T.red
+    max_hp = 10
+    dice = 1, 6, 1
+    armor = 5
+    level = 3
+
+class MadAdventurer(Monster):
+    name = 'mad adventurer'
+    glyph = '@', T.violet
+    max_hp = 15
+    dice = 1, 6, 3
+    armor = 6
+    drop_rate = 15
+    level = 4
+
+class Ogre(Monster):
+    name = 'ogre'
+    glyph = 'O', T.dark_green
+    max_hp = 15
+    speed = -1
+    dice = 1, 8, 2
+    armor = 6
+    level = 4
+
+class KillerBat(Monster):
+    name = 'killer bat'
+    glyph = 'B', T.orange
+    max_hp = 5
+    speed = 2
+    dice = 1, 10, 0
+    fears_light = True
+    multi = 3
+    level = 4
+
+class Dragon(Monster):
+    name = 'dragon'
+    glyph = rainbow_glyph('D')
+    max_hp = 20
+    dice = 1, 10, 0
+    drop_rate = 30
+    level = 5
 
 class Giant(Monster):
     name = 'giant'
     glyph = 'H', T.light_grey
     max_hp = 20
-    dice = 5, 4, 0
-    fov_range = 6
     speed = -2
-    armor = 10
-    level = 10
-
-class Orc(Monster):
-    name = 'orc'
-    glyph = 'o', T.red
-    max_hp = 10
-    dice = 1, 6, 0
-    armor = 6
-    level = 4
-
-class Orc(Monster):
-    name = 'orc'
-    glyph = 'o', T.red
-    max_hp = 10
-    dice = 1, 6, 0
-    armor = 6
-    level = 4
+    dice = 1, 10, 2
+    level = 5
 
 ##### UNREAL MONSTERS
 
-class Pony(UnrealMonster):
-    name = 'pony'
-    glyph = rainbow_glyph('u')
-    max_hp = 10
-    dice = 1, 8, 0
+class Butterfly(UnrealMonster):
+    name = 'butterfly'
+    glyph = rainbow_glyph('B')
+    max_hp = 2
+    speed = 3
+    dice = 1, 3, 0
     armor = 2
-    multi = 5
-    level = 3
+    multi = 6
+    level = 1
 
-class Unicorn(UnrealMonster):
-    name = 'unicorn'
-    glyph = 'U', T.white
-    max_hp = 20
-    dice = 1, 10, 0
-    level = 5
+class Ghost(UnrealMonster):
+    name = 'ghost'
+    glyph = '@', T.white
+    max_hp = 6
+    dice = 1, 7, 0
+    fears_light = True
+    level = 2
 
-class Wookiee(UnrealMonster):
-    name = 'Wookiee'
-    glyph = 'W', T.dark_orange
+class LittlePony(UnrealMonster):
+    name = 'little pony'
+    glyph = rainbow_glyph('u')
     max_hp = 7
-    dice = 1, 7, 2
+    dice = 1, 6, 3
+    multi = True
     level = 3
+
+class PinkUnicorn(UnrealMonster):
+    name = 'pink unicorn'
+    glyph = 'U', T.pink
+    max_hp = 10
+    dice = 1, 8, 4
+    level = 4
+
+class RobotUnicorn(UnrealMonster):
+    name = 'robot unicorn'
+    glyph = rainbow_glyph('U', remember=False)
+    max_hp = 10
+    dice = 1, 8, 6
+    level = 4
+
+class Grue(UnrealMonster):
+    name = 'grue'
+    glyph = 'G', T.dark_grey
+    max_hp = 10
+    dice = 1, 2, 0
+    sanity_dice = 1, 8, 0
+    fears_light = True
+    level = 4
+
+class FSM(UnrealMonster):
+    name = 'flying spaghetti monster'
+    glyph = 'S', T.yellow
+    max_hp = 15
+    dice = 2, 6, 0
+    sanity_dice = 2, 8, 0
+    level = 5

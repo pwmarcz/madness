@@ -71,8 +71,8 @@ class Map(object):
             item = random_by_level(level, Item.ALL)()
             tile.items.append(item)
 
-    def place_monsters(self, mcls):
-        x, y, tile = self.random_empty_tile()
+    def place_monsters(self, mcls, *args, **kwargs):
+        x, y, tile = self.random_empty_tile(*args, **kwargs)
         def flood(x, y, n):
             if n == 0:
                 return n
@@ -104,42 +104,9 @@ class Map(object):
             return (x, y, tile)
 
     def insane_effect(self, n):
-        ui.message('[Insane effect of severity %d]' % n)
-        return
-        if n <= 2:
-            ui.message(choice(INSANE_MESSAGES))
-        #elif n <= 3:
-        #    self.transform_monster(True)
-        elif n <= 5:
-            mcls = random_by_level(self.level+3, UnrealMonster.ALL)
-            self.place_monsters(mcls)
-        else:
-            pass
-
-    def transform_monster(self, not_seen):
-        def good(mon):
-            if not isinstance(mon, Monster):
-                return
-            if not_seen and self.is_visible(mon.x, mon.y):
-                return False
-            if not mon.real:
-                return False
-            return True
-        mons = filter(good, self.mobs)
-        if not mons:
-            return False
-        cls = random_by_level(self.level+5, Monster.ALL)
-        mon = choice(mons)
-        mon.look_like(cls)
-        return True
-
-INSANE_MESSAGES = [
-    'You hear a distant scream.',
-    'You hear strange whispers.',
-    'Your surroundings suddenly seem to blur.',
-    'Everything starts to look colorful...',
-    'Suddenly the ceiling looks much lower than usual.',
-]
+        #ui.message('[Insane effect of severity %d]' % n)
+        mcls = random_by_level((self.level+n)/2, UnrealMonster.ALL)
+        self.place_monsters(mcls, not_seen=True)
 
 class Tile(object):
     walkable = True
