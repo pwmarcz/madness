@@ -159,14 +159,14 @@ class LongSword(Weapon):
 class TwoSword(Weapon):
     name = 'two-handed sword'
     glyph = '(', T.light_grey
-    dice = 2, 6, 0
+    dice = 2, 8, 0
     speed = -1
     level = 4
 
 class Halberd(Weapon):
     name = 'halberd'
     glyph = '(', T.light_grey
-    dice = 3, 4, 0
+    dice = 3, 6, 0
     speed = -1
     level = 4
 
@@ -236,7 +236,7 @@ class PotionSanity(Potion):
 class PotionHealing(Potion):
     glyph = '!', T.green
     name = 'potion of health'
-    level = 3
+    level = 2
 
     def on_use(self, player):
         super(PotionHealing, self).on_use(player)
