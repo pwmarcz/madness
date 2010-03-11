@@ -18,7 +18,7 @@ def array_to_tiles(arr):
     return [[TILE_TABLE[c]() for c in line] for line in arr]
 
 def try_put_room(arr, w, h):
-    x1, y1 = randrange(MAP_W-w-2), randrange(MAP_H-h-2)
+    x1, y1 = randrange(MAP_W-w), randrange(MAP_H-h)
     for x in range(x1, x1+w):
         for y in range(y1, y1+h):
             if arr[x][y] != ' ':

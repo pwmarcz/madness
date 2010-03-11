@@ -4,3 +4,4 @@ syntax: glob
 *.exe
 dist
 build
+character.txt

@@ -4,6 +4,7 @@ from settings import *
 from map import *
 from mob import *
 from item import *
+from util import in_map
 import ui
 
 KEYS = [
@@ -75,6 +76,7 @@ class Game(object):
                     ui.prompt(
                         '[Game over: %s. Press ENTER]' % self.player.death,
                         [T.KEY_ENTER])
+                    self.save_character_dump()
                     raise Quit()
                 if self.player.won:
                     ui.prompt(
@@ -167,3 +169,44 @@ class Game(object):
 
     def cmd_look(self):
         ui.look_mode()
+
+    def save_character_dump(self):
+        from datetime import datetime
+
+        try:
+            with open('character.txt', 'w') as f:
+                f.write('%s - character dump\n\n' % TITLE)
+                f.write(datetime.strftime(datetime.now(), '%d/%m/%y %H:%M')+'\n\n')
+                f.write('  MAP\n\n')
+                for y in range(MAP_H):
+                    for x in range(MAP_W):
+                        tile = self.map.tiles[x][y]
+                        if tile.mob and not isinstance(tile.mob, UnrealMonster):
+                            c, _ = tile.mob.glyph
+                        elif tile.items:
+                            c, _ = tile.items[-1].glyph
+                        else:
+                            all_solid = True
+                            for dx in range(-1,2):
+                                for dy in range(-1,2):
+                                    if in_map(x+dx, y+dy) and \
+                                            self.map.tiles[x+dx][y+dy].transparent:
+                                        all_solid = False
+                            if all_solid:
+                                c = ' '
+                            else:
+                                c, _ = tile.glyph
+                        f.write(c)
+                    f.write('\n')
+                f.write('\n  LAST MESSAGES\n\n')
+                for _, s, _ in ui.MESSAGES[-10:]:
+                    f.write(s+'\n')
+                f.write('\n  STATUS\n\n')
+                f.write('\n'.join(ui.status_lines()))
+                f.write('\n\n  INVENTORY\n\n')
+                for item in self.player.items:
+                    f.write('%s%s\n' %
+                            ('*' if self.player.has_equipped(item) else ' ',
+                             item.descr))
+        except IOError:
+            pass

@@ -68,11 +68,8 @@ def _draw_map():
                    None, 1, 1)
 
 
-def _draw_status():
-    con = CON_STATUS
-    T.console_clear(con)
-    T.console_set_foreground_color(con, T.light_grey)
-    status = [
+def status_lines():
+    return [
         'Dlvl: %d' % GAME.map.level,
         '',
         'L%d%s' % (GAME.player.level, ' [wizard mode]' if GAME.wizard else ''),
@@ -83,6 +80,12 @@ def _draw_status():
         'Damage: %s' % describe_dice(*GAME.player.dice),
         'Turns:  %d' % GAME.turns,
     ]
+
+def _draw_status():
+    con = CON_STATUS
+    T.console_clear(con)
+    T.console_set_foreground_color(con, T.light_grey)
+    status = status_lines()
     T.console_print_left(con, 0, 0, T.BKGND_NONE,
                                '\n'.join(status))
     T.console_blit(CON_STATUS, 0, 0, STATUS_W, STATUS_H,
@@ -119,7 +122,7 @@ def _draw_items(title, items):
         c, color = item.glyph
         T.console_put_char_ex(con, 4, i+2, ord(c), color, T.black)
         s = item.descr
-        if GAME.player.is_equipped(item):
+        if GAME.player.has_equipped(item):
             T.console_put_char_ex(con, 0, i+2, ord('*'),
                                   T.light_grey, T.BKGND_NONE)
             T.console_set_foreground_color(con, T.white)

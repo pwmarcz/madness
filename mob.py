@@ -135,7 +135,7 @@ class Player(Mob):
         self.fov_range += n
         self.map.recalc_fov()
 
-    def is_equipped(self, item):
+    def has_equipped(self, item):
         return item.slot and self.equipment[item.slot] == item
 
     def put(self, m, x, y):
@@ -157,7 +157,7 @@ class Player(Mob):
         if item.slot is None:
             item.on_use(self)
             self.use_energy()
-        elif self.is_equipped(item):
+        elif self.has_equipped(item):
             self.unequip(item)
         else:
             self.equip(item)
