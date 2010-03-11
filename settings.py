@@ -6,9 +6,9 @@ SCREEN_W = 80
 SCREEN_H = 25
 
 MAP_W = 59
-MAP_H = 19
+MAP_H = 18
 
-BUFFER_H = 4
+BUFFER_H = 5
 
 FONTS = [
     ('fonts/terminal10x18.png',
@@ -47,8 +47,8 @@ Move:  numpad,             Inventory:    i
        arrow keys,         Pick up:      g, ,
        yuhjklbn            Drop:         d
 Wait:  5, .                Descend:      >
-Help:  ?                   Change font:  F10
-Quit:  q, Esc
+Look:  x                   Change font:  F10
+Help:  ?                   Quit:  q, Esc
 
 [Press any key to continue]'''
 

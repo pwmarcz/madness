@@ -82,6 +82,7 @@ class Mob(object):
 class Player(Mob):
     glyph = '@', T.white
     regen = 4
+    name = 'you'
 
     def __init__(self, wizard):
         super(Player, self).__init__()
@@ -117,7 +118,6 @@ class Player(Mob):
 
     def add_exp(self, mob):
         self.exp += int(1.7 ** mob.level)
-        print self.exp
         new_level = min(int(log(self.exp/5+2, 2)), MAX_CLEVEL)
         while new_level > self.level:
             self.advance()
@@ -146,7 +146,11 @@ class Player(Mob):
     def move(self, x, y):
         super(Player, self).move(x, y)
         self.map.recalc_fov()
-        self.tile.describe()
+        if self.tile.items:
+            if len(self.tile.items) == 1:
+                ui.message('You see here %s.' % self.tile.items[0].a)
+            else:
+                ui.message('Several items are lying here.')
         self.use_energy()
 
     def use(self, item):
@@ -417,6 +421,7 @@ class Rat(Monster):
     glyph = 'r', T.dark_orange
     max_hp = 2
     dice = 1, 3, 0
+    drop_rate = 1
     multi = 4
     level = 1
 
@@ -451,7 +456,7 @@ class MadAdventurer(Monster):
     max_hp = 12
     dice = 1, 6, 1
     armor = 5
-    drop_rate = 15
+    drop_rate = 18
     level = 4
 
 class Ogre(Monster):

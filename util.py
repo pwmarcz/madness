@@ -2,6 +2,8 @@ from random import randrange, choice
 
 import libtcodpy as T
 
+from settings import *
+
 ALL_DIRS = []
 for dx in range(-1,2):
     for dy in range(-1,2):
@@ -48,6 +50,9 @@ def array(w, h, func):
     def line():
         return [func() for y in range(h)]
     return [line() for x in range(w)]
+
+def in_map(x, y):
+    return 0 <= x and x < MAP_W and 0 <= y and y < MAP_H
 
 class Register(type):
     def __new__(mcs, name, bases, dict):

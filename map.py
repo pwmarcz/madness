@@ -67,7 +67,7 @@ class Map(object):
 
     def populate(self):
         n_monsters = 3 + roll(2, self.level)
-        n_items = roll(2, 3)
+        n_items = roll(1, 4)
         for i in range(n_monsters):
             mcls = random_by_level(self.level, Monster.ALL)
             self.place_monsters(mcls)
@@ -123,20 +123,10 @@ class Tile(object):
     transparent = True
     glyph = UNKNOWN_GLYPH
     known_glyph = ' ', T.white
-    # if special, describe on entering
-    special = False
 
     def __init__(self):
         self.mob = None
         self.items = []
-
-    def describe(self):
-        if self.special:
-            ui.message('%s.' % self.name)
-        if self.mob and not isinstance(self.mob, Player):
-            ui.message('A %s is here.' % self.mob.name)
-        for item in self.items:
-            ui.message('You see here %s.' % item.a)
 
     @property
     def visible_glyph(self):
@@ -164,25 +154,21 @@ class WallTile(Tile):
     walkable = False
     transparent = False
     glyph = '#', T.grey
-    special = True
 
 class WoodWallTile(Tile):
     name = 'wooden wall'
     walkable = False
     transparent = False
     glyph = '#', T.dark_orange
-    special = True
 
 class StairUpTile(Tile):
     name = 'stairs up'
     walkable = True
     transparent = True
     glyph = '<', T.light_grey
-    special = True
 
 class StairDownTile(Tile):
     name = 'stairs down'
     walkable = True
     transparent = True
     glyph = '>', T.light_grey
-    special = True

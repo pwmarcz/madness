@@ -21,6 +21,7 @@ KEYS = [
     (['i'], 'inventory'),
     (['d'], 'drop'),
     (['>'], 'descend'),
+    (['x'], 'look'),
     (['?'], 'help'),
     ([T.KEY_F10], 'cycle_font'),
     (['W'], 'wizard'),
@@ -163,3 +164,6 @@ class Game(object):
     def cmd_wizard(self):
         if self.wizard and self.map.level < MAX_DLEVEL:
             self.start_map(self.map.level+1)
+
+    def cmd_look(self):
+        ui.look_mode()

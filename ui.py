@@ -3,7 +3,7 @@ from random import choice
 import libtcodpy as T
 
 from settings import *
-from util import distance, describe_dice
+from util import distance, describe_dice, in_map
 
 STATUS_W = SCREEN_W-MAP_W-2
 STATUS_H = 10
@@ -47,14 +47,15 @@ def insanize_color(color, sanity):
     else:
         return color
 
-def _draw_map(m, con):
+def _draw_map():
+    con = CON_MAP
     for x in range(MAP_W):
         for y in range(MAP_H):
-            tile = m.tiles[x][y]
-            if m.is_visible(x, y):
+            tile = GAME.map.tiles[x][y]
+            if GAME.map.is_visible(x, y):
                 c, color = tile.visible_glyph
-                d = distance(x, y, m.player.x, m.player.y)
-                if d > m.player.light_range + 1:
+                d = distance(x, y, GAME.map.player.x, GAME.map.player.y)
+                if d > GAME.map.player.light_range + 1:
                     color *= 0.6
                 color = insanize_color(color, GAME.player.sanity)
             else:
@@ -63,8 +64,12 @@ def _draw_map(m, con):
                                      GAME.player.sanity/100.0)
             T.console_put_char_ex(con, x, y, ord(c),
                                   color, T.black)
+    T.console_blit(con, 0, 0, MAP_W, MAP_H,
+                   None, 1, 1)
 
-def _draw_status(con):
+
+def _draw_status():
+    con = CON_STATUS
     T.console_clear(con)
     T.console_set_foreground_color(con, T.light_grey)
     status = [
@@ -80,23 +85,30 @@ def _draw_status(con):
     ]
     T.console_print_left(con, 0, 0, T.BKGND_NONE,
                                '\n'.join(status))
+    T.console_blit(CON_STATUS, 0, 0, STATUS_W, STATUS_H,
+                   None, MAP_W+1, 1)
 
-def _draw_messages(m, con):
-    if not m:
+
+def _draw_messages():
+    con = CON_BUFFER
+    n = len(MESSAGES)
+    if n == 0:
         return
-    n = len(m)
     start = max(n-BUFFER_H,0)
     T.console_clear(con)
     for i in range(start, n):
-        latest, s, color = m[i]
+        latest, s, color = MESSAGES[i]
         if not latest:
             color *= 0.6
         T.console_set_foreground_color(
             con,
             color)
         T.console_print_left(con, 0, i-start, T.BKGND_NONE, s)
+    T.console_blit(con, 0, 0, SCREEN_W, BUFFER_H,
+                   None, 1, MAP_H+1)
 
-def _draw_items(title, items, con):
+def _draw_items(title, items):
+    con = CON_INV
     T.console_clear(con)
     T.console_set_foreground_color(con, T.white)
     T.console_print_left(con, 1, 0, T.BKGND_NONE, title)
@@ -114,11 +126,11 @@ def _draw_items(title, items, con):
         else:
             T.console_set_foreground_color(con, T.grey)
         T.console_print_left(con, 6, i+2, T.BKGND_NONE, s)
+    T.console_blit(con, 0, 0, INV_W, INV_H,
+                   None, 1, 1)
 
 def draw_inventory(title='Inventory', items=None):
-    _draw_items(title, items or GAME.player.items, CON_INV)
-    T.console_blit(CON_INV, 0, 0, INV_W, INV_H,
-                   None, 1, 1)
+    _draw_items(title, items or GAME.player.items)
     T.console_flush()
 
 def select_item(title, items):
@@ -133,25 +145,32 @@ def select_item(title, items):
 
 def draw_all():
     T.console_clear(None)
-    _draw_map(GAME.map, CON_MAP)
-    _draw_messages(MESSAGES, CON_BUFFER)
-    _draw_status(CON_STATUS)
-    T.console_blit(CON_MAP, 0, 0, MAP_W, MAP_H,
-                   None, 1, 1)
-    T.console_blit(CON_BUFFER, 0, 0, SCREEN_W, BUFFER_H,
-                   None, 1, MAP_H+1)
-    T.console_blit(CON_STATUS, 0, 0, STATUS_W, STATUS_H,
-                   None, MAP_W+1, 1)
+    _draw_map()
+    _draw_messages()
+    _draw_status()
     T.console_flush()
 
 def message(s, color=T.white):
     s = s[0].upper() + s[1:]
     print s
+    while len(MESSAGES) > BUFFER_H-1 and \
+            MESSAGES[-BUFFER_H][0]:
+        m = MESSAGES.pop()
+        MESSAGES.append((True, '[more]', T.green))
+        _draw_messages()
+        T.console_flush()
+        readkey()
+        MESSAGES.pop()
+        new_ui_turn()
+        MESSAGES.append(m)
+
     MESSAGES.append((True, s, color))
+    _draw_messages()
+    T.console_flush()
 
 def prompt(s, choices=None):
     message(s, T.green)
-    draw_all()
+    #draw_all()
     if choices:
         choices = list(choices)
         while True:
@@ -188,6 +207,62 @@ def help_screen():
         T.console_print_left(None, 1, 1+i, T.BKGND_NONE, line)
     T.console_flush()
     readkey()
+
+def describe_tile(x, y):
+    if GAME.map.is_visible(x, y):
+        tile = GAME.map.tiles[x][y]
+        message('%s.' % tile.name, tile.glyph[1])
+        if tile.mob:
+            message('%s.' % tile.mob.name, tile.mob.glyph[1])
+        for item in tile.items:
+            message('%s.' % item.descr, item.glyph[1])
+    else:
+        message('Out of sight.', T.grey)
+
+
+def look_mode():
+    global MESSAGES
+    from game import decode_key
+
+    x, y = GAME.player.x, GAME.player.y
+    _messages = MESSAGES
+    MESSAGES = []
+    message('Look mode - use movement keys, ESC/q to exit.', T.green)
+    new_ui_turn()
+    _draw_messages()
+    redraw = True
+    while True:
+        if redraw:
+            T.console_blit(CON_MAP, 0, 0, MAP_W, MAP_H,
+                           None, 1, 1)
+            c = T.console_get_char(CON_MAP, x, y)
+            color = T.console_get_fore(CON_MAP, x, y)
+
+            T.console_put_char_ex(None, x+1, y+1, c,
+                                  T.black, color)
+
+            describe_tile(x, y)
+
+            _draw_messages()
+            T.console_flush()
+
+            # now clear the message buffer of last messages
+            while MESSAGES and MESSAGES[-1][0]:
+                MESSAGES.pop()
+
+            redraw = False
+        cmd = decode_key(readkey())
+        if cmd == 'quit':
+            break
+        elif isinstance(cmd, tuple):
+            name, args = cmd
+            if name == 'walk':
+                dx, dy = args
+                if in_map(x+dx, y+dy):
+                    x, y = x+dx, y+dy
+                    redraw = True
+
+    MESSAGES = _messages
 
 def readkey():
     while True:
