@@ -82,6 +82,7 @@ class Game(object):
                     ui.prompt(
                         'Congratulations! You have won. Press ENTER',
                         [T.KEY_ENTER])
+                    self.save_character_dump()
                     raise Quit()
                 while self.player.action_turns > 0:
                     key = ui.readkey()
@@ -176,7 +177,7 @@ class Game(object):
         try:
             with open('character.txt', 'w') as f:
                 f.write('%s - character dump\n\n' % TITLE)
-                f.write(datetime.strftime(datetime.now(), '%d/%m/%y %H:%M')+'\n\n')
+                f.write(datetime.strftime(datetime.now(), '%d/%m/%Y %H:%M')+'\n\n')
                 f.write('  MAP\n\n')
                 for y in range(MAP_H):
                     for x in range(MAP_W):
