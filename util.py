@@ -31,10 +31,12 @@ def roll(a, b, c=0):
     return sum(randrange(1,b+1) for i in range(a))+c
 
 def describe_dice(a, b, c):
-    if c == 0:
-        return '%dd%d' % (a, b)
-    else:
-        return '%dd%d+%d' % (a, b, c)
+    s = '%dd%d' % (a, b)
+    if c > 0:
+        s += '+%d' % c
+    elif c < 0:
+        s += '-%d' % (-c)
+    return s
 
 def random_by_level(level, items):
     if roll(1, 1000) == 1: # out of depth

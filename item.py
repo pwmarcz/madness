@@ -81,6 +81,15 @@ class Weapon(Item):
     ABSTRACT = True
     slot = 'w'
 
+    def __init__(self):
+        super(Weapon, self).__init__()
+        if roll(1, 8) == 1:
+            a, b, c = self.dice
+            c += roll(2, 3, -3)
+            if roll(1, 8) == 1:
+                b += roll(1, 2)
+            self.dice = a, b, c
+
     @property
     def descr(self):
         return '%s (%s)%s' % (self.name, describe_dice(*self.dice),
