@@ -239,8 +239,7 @@ class PotionSanity(Potion):
 
     def on_use(self, player):
         super(PotionSanity, self).on_use(player)
-        player.restore_sanity(70)
-        player.map.clear_insane_effects()
+        player.restore_sanity()
 
 class PotionHealing(Potion):
     glyph = '!', T.green

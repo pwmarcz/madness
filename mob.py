@@ -55,8 +55,7 @@ class Mob(object):
 
     def can_walk(self, dx, dy):
         destx, desty = self.x+dx, self.y+dy
-        if destx < 0 or destx >= MAP_W or \
-                desty < 0 or desty >= MAP_H:
+        if not in_map(destx, desty):
             return False
         tile = self.map.tiles[destx][desty]
         return (tile.walkable or self.enters_walls) and \
@@ -88,6 +87,8 @@ class Player(Mob):
         super(Player, self).__init__()
         self.level = 1
         self.sanity = MAX_SANITY
+        # dict letter -> effect
+        self.effects = {}
         self.max_hp = 25
         self.speed = 0
         self.hp = self.max_hp
@@ -153,6 +154,27 @@ class Player(Mob):
             else:
                 ui.message('Several items are lying here.')
         self.use_energy()
+
+    def walk(self, dx, dy, panic=True):
+        destx, desty = self.x+dx, self.y+dy
+        if not in_map(destx, desty):
+            return False
+        tile = self.map.tiles[destx][desty]
+        if panic and 'f' in self.effects:
+            neighbors = self.map.neighbor_tiles(self.x, self.y)
+            n_monsters = sum(1 if tile.mob else 0 for tile in neighbors)
+            if roll(1, 8) <= min(5, n_monsters):
+                ui.message('You panic!', T.yellow)
+                dx, dy = choice(ALL_DIRS)
+                self.walk(dx, dy, False)
+                return
+        if tile.mob:
+            self.attack(tile.mob)
+        elif not tile.walkable:
+            ui.message('You bump into a wall.')
+            pass
+        else:
+            self.move(destx, desty)
 
     def use(self, item):
         if item.slot is None:
@@ -245,32 +267,34 @@ class Player(Mob):
             light.turns_left -= 1
             if light.turns_left <= 0:
                 self.extinguish(light)
-        if roll(1, 10) == 1:
+        if roll(1, 1) == 1:
             self.decrease_sanity(roll(1, max(1, self.map.level/2-3)))
 
     def decrease_sanity(self, n):
+        from effect import add_insane_effects
         self.sanity -= n
         if self.sanity <= 0:
             ui.message('You feel reality slipping away...')
             self.death = 'insane'
         else:
-            if roll(1, 80) > self.sanity:
-                severity = roll(1, (8-self.sanity/10))
-                self.map.insane_effect(severity)
+            add_insane_effects(self)
+            for eff in self.effects.values():
+                if roll(1, 80) > self.sanity:
+                    severity = roll(1, (8-self.sanity/10))
+                    eff.do_effect(severity)
 
-    def restore_sanity(self, n):
-        self.sanity = min(MAX_SANITY, self.sanity + n)
-        ui.message('You feel more awake.')
+    def restore_sanity(self):
+        self.sanity = MAX_SANITY
+        ui.message('You feel more awake.', T.yellow)
+        for eff in self.effects.values():
+            eff.remove()
 
     def resurrect(self):
         self.death = None
         if self.hp <= 0:
             self.hp = self.max_hp
         if self.sanity <= 0:
-            self.sanity = 100
-
-    def is_affected_by_unreal(self):
-        return self.sanity <= 36
+            self.restore_sanity()
 
 class Monster(Mob):
     ALL = []
@@ -306,7 +330,7 @@ class Monster(Mob):
         self.remove()
 
     def damage(self, dmg):
-        if not (self.real or self.map.player.is_affected_by_unreal()):
+        if not (self.real or ('r' in self.map.player.effects)):
             self.disappear()
             return
         dmg -= self.armor
@@ -402,7 +426,7 @@ class Monster(Mob):
         else:
             ui.message('The %s critically hits you!' % self.name, T.yellow)
             dmg *= 2
-        if self.real or player.is_affected_by_unreal():
+        if self.real or ('r' in player.effects):
             player.damage(dmg, self)
         if self.sanity_dice and not player.death:
             d = roll(*self.sanity_dice)

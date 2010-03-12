@@ -49,19 +49,20 @@ def insanize_color(color, sanity):
 
 def _draw_map():
     con = CON_MAP
-    sanity = GAME.player.sanity
+    player = GAME.player
     for x in range(MAP_W):
         for y in range(MAP_H):
             tile = GAME.map.tiles[x][y]
             if GAME.map.is_visible(x, y):
                 c, color = tile.visible_glyph
-                d = distance(x, y, GAME.map.player.x, GAME.map.player.y)
-                if d > GAME.map.player.light_range + 1:
+                d = distance(x, y, player.x, player.y)
+                if d > player.light_range + 1:
                     color *= 0.6
-                color = insanize_color(color, sanity)
+                if 'h' in player.effects:
+                    color = insanize_color(color, player.sanity)
             else:
                 c, _ = tile.known_glyph
-                color = T.dark_grey*((sanity/100.0)*0.6+0.4)
+                color = T.dark_grey*((player.sanity/100.0)*0.6+0.4)
             T.console_put_char_ex(con, x, y, ord(c),
                                   color, T.black)
     T.console_blit(con, 0, 0, MAP_W, MAP_H,

@@ -51,6 +51,11 @@ class Map(object):
         return T.map_is_in_fov(self.fov_map, x, y) and \
             distance(x, y, self.player.x, self.player.y) <= self.player.fov_range
 
+    def neighbor_tiles(self, x, y):
+        for dx, dy in ALL_DIRS:
+            if in_map(x+dx, y+dy):
+                yield self.tiles[x+dx][y+dy]
+
     def __del__(self):
         T.map_delete(self.fov_map)
 
@@ -107,16 +112,6 @@ class Map(object):
             if not_seen and self.is_visible(x, y):
                 continue
             return (x, y, tile)
-
-    def insane_effect(self, n):
-        #ui.message('[Insane effect of severity %d]' % n)
-        for i in range(n):
-            mcls = random_by_level(self.level, UnrealMonster.ALL)
-            self.place_monsters(mcls, not_seen=True)
-
-    def clear_insane_effects(self):
-        for mon in filter(lambda m: isinstance(m, UnrealMonster), self.mobs):
-            mon.remove()
 
 class Tile(object):
     walkable = True

@@ -106,14 +106,7 @@ class Game(object):
         ui.draw_all()
 
     def cmd_walk(self, dx, dy):
-        destx, desty = self.player.x+dx, self.player.y+dy
-        tile = self.map.tiles[destx][desty]
-        if tile.mob:
-            self.player.attack(tile.mob)
-        elif not tile.walkable:
-            pass
-        else:
-            self.player.walk(dx, dy)
+        self.player.walk(dx, dy)
 
     def cmd_wait(self):
         self.player.wait()
@@ -186,17 +179,11 @@ class Game(object):
                             c, _ = tile.mob.glyph
                         elif tile.items:
                             c, _ = tile.items[-1].glyph
+                        elif all(not tile.transparent
+                                 for tile in self.map.neighbor_tiles(x, y)):
+                            c = ' '
                         else:
-                            all_solid = True
-                            for dx in range(-1,2):
-                                for dy in range(-1,2):
-                                    if in_map(x+dx, y+dy) and \
-                                            self.map.tiles[x+dx][y+dy].transparent:
-                                        all_solid = False
-                            if all_solid:
-                                c = ' '
-                            else:
-                                c, _ = tile.glyph
+                            c, _ = tile.glyph
                         f.write(c)
                     f.write('\n')
                 f.write('\n  LAST MESSAGES\n\n')
@@ -209,5 +196,9 @@ class Game(object):
                     f.write('%s%s\n' %
                             ('*' if self.player.has_equipped(item) else ' ',
                              item.descr))
+                if self.player.effects:
+                    f.write('\n  INSANITY\n\n')
+                    for eff in self.player.effects.values():
+                        f.write(eff.long_descr + '\n')
         except IOError:
             pass
