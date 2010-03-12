@@ -1,4 +1,4 @@
-from random import choice
+from random import choice, shuffle
 
 from util import *
 from mob import *
@@ -28,24 +28,46 @@ class InsaneEffect(object):
         pass
 
 class Hallu(InsaneEffect):
-    letter = 'h'
-    add_message = 'You start to notice strange shapes in the darkness.'
-    remove_message = 'The darkness is calm once again.'
-    long_descr = 'You are hallucinating.'
     sanity_range = 70, 45
+
+    def add(self, player):
+        if self.exclude not in player.effects:
+            super(Hallu, self).add(player)
 
     def do_effect(self, severity):
         super(Hallu, self).do_effect(severity)
         m = self.player.map
         for i in range(severity):
-            mcls = random_by_level(m.level, UnrealMonster.ALL)
+            mcls = random_by_level(m.level, self.monsters_from.ALL)
             m.place_monsters(mcls, not_seen=True)
 
     def remove(self):
         super(Hallu, self).remove()
-        for mon in filter(lambda m: isinstance(m, UnrealMonster),
+        for mon in filter(lambda m: not m.real,
                           self.player.map.mobs):
             mon.remove()
+
+class Happy(Hallu):
+    letter = 'h'
+    exclude = 'd'
+    add_message = 'You see a rainbow in the distance.'
+    remove_message = 'The darkness is calm once again.'
+    long_descr = 'You are hallucinating.'
+    monsters_from = HappyMonster
+
+class Dark(Hallu):
+    letter = 'd'
+    exclude = 'h'
+    remove_message = 'The darkness is calm once again.'
+    long_descr = 'You are afraid of the dark.'
+    monsters_from = DarkMonster
+
+    @property
+    def add_message(self):
+        if self.player.light_range > 0:
+            return 'The light suddenly becomes dim.'
+        else:
+            return 'You notice strange shapes in the darkness.'
 
 class Real(InsaneEffect):
     sanity_range = 40, 30
@@ -59,9 +81,10 @@ class Fear(InsaneEffect):
     remove_message = 'You feel less frightened.'
     long_descr = 'You are paralyzed by fear.'
 
-EFFECTS = [Hallu, Real, Fear]
+EFFECTS = [Dark, Happy, Real, Fear]
 
 def add_insane_effects(player):
+    shuffle(EFFECTS)
     for ecls in EFFECTS:
         if ecls.letter in player.effects:
             continue

@@ -15,6 +15,7 @@ class Mob(object):
 
     enters_walls = False
     sanity_dice = None
+    real = True
 
     # -4 = rests every other turn
     # -1 = rests every 5th turn
@@ -222,7 +223,7 @@ class Player(Mob):
                 # everything has to look normal?
                 mon.look_normal()
                 self.death = 'killed by %s%s' % (
-                    ('imaginary ' if isinstance(mon, UnrealMonster) else ''),
+                    ('imaginary ' if not mon.real else ''),
                     mon.name)
 
     def pick_up(self, item):
@@ -434,10 +435,19 @@ class Monster(Mob):
             player.decrease_sanity(d)
 
 class UnrealMonster(Monster):
-    ALL = []
     ABSTRACT = True
     real = False
     drop_rate = 0
+
+class HappyMonster(UnrealMonster):
+    ABSTRACT = True
+    ALL = []
+
+class DarkMonster(UnrealMonster):
+    ABSTRACT = True
+    ALL = []
+    fears_light = True
+    enters_walls = True
 
 ##### MONSTERS
 
@@ -538,28 +548,19 @@ class Boss(Monster):
         super(Boss, self).die()
         self.map.player.won = True
 
-##### UNREAL MONSTERS
+##### HAPPY (UNREAL) MONSTERS
 
-class Butterfly(UnrealMonster):
+class Butterfly(HappyMonster):
     name = 'butterfly'
     glyph = rainbow_glyph('b')
     max_hp = 2
     speed = 3
     dice = 1, 3, 0
     armor = 2
-    multi = 6
+    multi = 4
     level = 1
 
-class Ghost(UnrealMonster):
-    name = 'ghost'
-    glyph = '@', T.white
-    max_hp = 6
-    dice = 1, 7, 0
-    fears_light = True
-    enters_walls = True
-    level = 2
-
-class LittlePony(UnrealMonster):
+class LittlePony(HappyMonster):
     name = 'little pony'
     glyph = rainbow_glyph('u')
     max_hp = 7
@@ -567,34 +568,67 @@ class LittlePony(UnrealMonster):
     multi = 3
     level = 3
 
-class PinkUnicorn(UnrealMonster):
+class PinkUnicorn(HappyMonster):
     name = 'pink unicorn'
     glyph = 'U', T.pink
     max_hp = 10
     dice = 1, 8, 4
     level = 4
 
-class RobotUnicorn(UnrealMonster):
+class RobotUnicorn(HappyMonster):
     name = 'robot unicorn'
     glyph = rainbow_glyph('U', remember=False)
     max_hp = 10
     dice = 1, 8, 6
     level = 4
 
-class Grue(UnrealMonster):
-    name = 'grue'
-    glyph = 'G', T.dark_grey
-    max_hp = 20
-    dice = 1, 10, 0
-    sanity_dice = 1, 4, 0
-    fears_light = True
-    multi = 2
-    level = 4
-
-class FSM(UnrealMonster):
+class FSM(HappyMonster):
     name = 'flying spaghetti monster'
     glyph = 'S', T.yellow
     max_hp = 15
     dice = 2, 6, 0
     sanity_dice = 2, 4, 0
+    level = 5
+
+##### DARK (UNREAL) MONSTERS
+
+class GhostBat(DarkMonster):
+    name = 'ghost bat'
+    glyph = 'B', T.white
+    max_hp = 3
+    dice = 1, 4, 0
+    multi = 3
+    level = 1
+
+class Ghost(DarkMonster):
+    name = 'ghost'
+    glyph = '@', T.white
+    max_hp = 6
+    dice = 1, 6, 0
+    level = 2
+
+class Phantom(DarkMonster):
+    name = 'phantom'
+    glyph = '@', T.dark_grey
+    max_hp = 6
+    dice = 1, 8, 0
+    sanity_dice = 1, 4, 0
+    enters_walls = True
+    multi = 3
+    level = 3
+
+class Grue(DarkMonster):
+    name = 'grue'
+    glyph = 'G', T.dark_grey
+    max_hp = 20
+    dice = 1, 10, 0
+    sanity_dice = 1, 6, 0
+    level = 4
+
+class Horror(DarkMonster):
+    name = 'grue'
+    glyph = '&', T.dark_grey
+    max_hp = 20
+    dice = 1, 8, 0
+    sanity_dice = 1, 8, 0
     level = 5

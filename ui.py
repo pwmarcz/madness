@@ -41,9 +41,23 @@ def insanize_color(color, sanity):
         color2 = choice([
                 T.black, T.white, T.green, T.yellow,
                 T.sky, T.red, T.pink])
+        # 0.0 .. 0.4
         d = 0.4*(1 - sanity / 50.0)
         color = T.color_lerp(color, color2, d)
         return color
+    else:
+        return color
+
+def dim_color(color, sanity):
+    if sanity < 50:
+        h, s, v = T.color_get_hsv(color)
+        # 1.0 .. 0.2
+        s *= 0.2 + 0.8*(sanity/50.0)
+        # 1.0 .. 0.75
+        v *= 0.75 + 0.25*(sanity/50.0)
+        color2 = T.Color(color.r, color.g, color.b)
+        T.color_set_hsv(color2, h, s, v)
+        return color2
     else:
         return color
 
@@ -60,6 +74,8 @@ def _draw_map():
                     color *= 0.6
                 if 'h' in player.effects:
                     color = insanize_color(color, player.sanity)
+                elif 'd' in player.effects:
+                    color = dim_color(color, player.sanity)
             else:
                 c, _ = tile.known_glyph
                 color = T.dark_grey*((player.sanity/100.0)*0.6+0.4)
