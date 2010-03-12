@@ -75,13 +75,13 @@ class Game(object):
                             continue
                     ui.prompt(
                         '[Game over: %s. Press ENTER]' % self.player.death,
-                        [T.KEY_ENTER])
+                        [T.KEY_ENTER, T.KEY_KPENTER])
                     self.save_character_dump()
                     raise Quit()
                 if self.player.won:
                     ui.prompt(
                         'Congratulations! You have won. Press ENTER',
-                        [T.KEY_ENTER])
+                        [T.KEY_ENTER, T.KEY_KPENTER])
                     self.save_character_dump()
                     raise Quit()
                 while self.player.action_turns > 0:
