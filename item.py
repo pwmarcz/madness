@@ -85,10 +85,10 @@ class Weapon(Item):
 
     def __init__(self):
         super(Weapon, self).__init__()
-        if roll(1, 5) == 1:
+        if roll(1, 4) == 1:
             a, b, c = self.dice
             c += roll(2, 4, -3)
-            if roll(1, 5) == 1:
+            if roll(1, 4) == 1:
                 b += roll(2, 2)
             self.dice = a, b, c
 

@@ -49,7 +49,8 @@ class Map(object):
 
     def is_visible(self, x, y):
         return T.map_is_in_fov(self.fov_map, x, y) and \
-            distance(x, y, self.player.x, self.player.y) <= self.player.fov_range
+            distance(x, y, self.player.x, self.player.y) <= \
+            self.player.fov_range
 
     def neighbor_tiles(self, x, y):
         for dx, dy in ALL_DIRS:
@@ -72,12 +73,12 @@ class Map(object):
 
     def populate(self):
         n_monsters = 3 + roll(2, self.level)
-        n_items = roll(2, 3)
+        n_items = roll(2, 4)
         for i in range(n_monsters):
             mcls = random_by_level(self.level, Monster.ALL)
             self.place_monsters(mcls)
         for i in range(n_items):
-            x, y, tile = self.random_empty_tile(no_mob=False)
+            x, y, tile = self.random_empty_tile(no_mob=False, no_stair=True)
             item = random_by_level(self.level, Item.ALL)()
             tile.items.append(item)
 
@@ -101,7 +102,7 @@ class Map(object):
         x, y, tile = self.random_empty_tile(*args, **kwargs)
         self.flood(x, y, mcls, mcls.multi)
 
-    def random_empty_tile(self, no_mob=True, not_seen=False):
+    def random_empty_tile(self, no_mob=True, not_seen=False, no_stair=False):
         while True:
             x, y = randrange(MAP_W), randrange(MAP_H)
             tile = self.tiles[x][y]
@@ -110,6 +111,8 @@ class Map(object):
             if no_mob and tile.mob:
                 continue
             if not_seen and self.is_visible(x, y):
+                continue
+            if no_stair and isinstance(tile, StairDownTile):
                 continue
             return (x, y, tile)
 

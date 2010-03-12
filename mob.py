@@ -97,6 +97,7 @@ class Player(Mob):
 
         import item
         self.items = [item.Torch(), item.PotionSanity()]
+        self.items.append(random_by_level(1, Item.ALL)())
         if wizard:
             self.items += [item.Torch(), item.EterniumSword()]
 
