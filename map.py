@@ -72,7 +72,7 @@ class Map(object):
 
     def populate(self):
         n_monsters = 3 + roll(2, self.level)
-        n_items = roll(2, 4)
+        n_items = roll(2, 3)
         for i in range(n_monsters):
             mcls = random_by_level(self.level, Monster.ALL)
             self.place_monsters(mcls)

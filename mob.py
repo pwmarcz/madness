@@ -70,10 +70,11 @@ class Mob(object):
 
     # Called every time a mob has an opportunity to act (depending on speed)
     def act(self):
-        self.to_regen += self.regen
-        if self.to_regen > 10:
-            self.hp = min(self.max_hp, self.to_regen/10+self.hp)
-            self.to_regen %= 10
+        if self.hp < self.max_hp:
+            self.to_regen += self.regen
+            if self.to_regen > 10:
+                self.hp = min(self.max_hp, self.to_regen/10+self.hp)
+                self.to_regen %= 10
 
     # Called every turn
     def heartbeat(self):
@@ -90,7 +91,7 @@ class Player(Mob):
         self.sanity = MAX_SANITY
         # dict letter -> effect
         self.effects = {}
-        self.max_hp = 25
+        self.max_hp = 28
         self.speed = 0
         self.hp = self.max_hp
 
@@ -308,7 +309,7 @@ class Monster(Mob):
     summoner = False
     fov_range = 5
     # n/30 is probability of item drop
-    drop_rate = 3
+    drop_rate = 2
     fears_light = False
 
     def __init__(self):
@@ -473,7 +474,7 @@ class Bat(Monster):
 class Goblin(Monster):
     name = 'goblin'
     glyph = 'g', T.light_blue
-    max_hp = 6
+    max_hp = 3
     dice = 1, 6, 1
     armor = 2
     level = 2
@@ -481,7 +482,7 @@ class Goblin(Monster):
 class Orc(Monster):
     name = 'orc'
     glyph = 'o', T.red
-    max_hp = 8
+    max_hp = 6
     dice = 1, 6, 2
     armor = 4
     level = 3
@@ -598,6 +599,7 @@ class GhostBat(DarkMonster):
     name = 'ghost bat'
     glyph = 'B', T.white
     max_hp = 3
+    speed = 2
     dice = 1, 4, 0
     multi = 3
     level = 1
