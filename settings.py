@@ -48,7 +48,7 @@ Move:  numpad,             Inventory:    i
        yuhjklbn            Drop:         d
 Wait:  5, .                Descend:      >
 Look:  x                   Change font:  F10
-Help:  ?                   Quit:  q, Esc
+Help:  ?                   Quit:         q, Esc
 
 [Press any key to continue]'''
 

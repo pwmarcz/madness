@@ -143,6 +143,9 @@ class Tile(object):
         else:
             self.known_glyph = self.glyph
 
+    def on_enter(self):
+        pass
+
 class FloorTile(Tile):
     name = 'floor'
     walkable = True
@@ -172,3 +175,6 @@ class StairDownTile(Tile):
     walkable = True
     transparent = True
     glyph = '>', T.light_grey
+
+    def on_enter(self):
+        ui.message('There is a down stairway here.')

@@ -146,6 +146,7 @@ class Player(Mob):
     def move(self, x, y):
         super(Player, self).move(x, y)
         self.map.recalc_fov()
+        self.tile.on_enter()
         if self.tile.items:
             if len(self.tile.items) == 1:
                 ui.message('You see here %s.' % self.tile.items[0].a)
@@ -213,7 +214,7 @@ class Player(Mob):
         self.use_energy()
 
     def drop(self, item):
-        if self.is_equipped(item):
+        if self.has_equipped(item):
             self.unequip(item)
         self.items.remove(item)
         self.tile.items.append(item)
@@ -405,7 +406,7 @@ class Monster(Mob):
             player.damage(dmg, self)
         if self.sanity_dice and not player.death:
             d = roll(*self.sanity_dice)
-            ui.message('You have trouble thinking straight!')
+            ui.message('You have trouble thinking straight!', T.yellow)
             player.decrease_sanity(d)
 
 class UnrealMonster(Monster):

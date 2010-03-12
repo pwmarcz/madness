@@ -83,11 +83,11 @@ class Weapon(Item):
 
     def __init__(self):
         super(Weapon, self).__init__()
-        if roll(1, 8) == 1:
+        if roll(1, 5) == 1:
             a, b, c = self.dice
-            c += roll(2, 3, -3)
-            if roll(1, 8) == 1:
-                b += roll(1, 2)
+            c += roll(2, 4, -3)
+            if roll(1, 5) == 1:
+                b += roll(2, 2)
             self.dice = a, b, c
 
     @property
@@ -251,3 +251,8 @@ class PotionHealing(Potion):
         super(PotionHealing, self).on_use(player)
         ui.message('You feel healed.')
         player.hp = player.max_hp
+
+
+if __name__ == '__main__':
+    d = [random_by_level(10, Item.ALL)().descr for i in range(20)]
+    print '\n'.join(d)
