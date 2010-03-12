@@ -9,6 +9,7 @@ class Item(object):
     ALL = []
     __metaclass__ = Register
     ABSTRACT = True
+    common = 10
 
     glyph = UNKNOWN_GLYPH
     slot = None
@@ -80,6 +81,7 @@ class LightSource(Item):
 class Weapon(Item):
     ABSTRACT = True
     slot = 'w'
+    common = 5
 
     def __init__(self):
         super(Weapon, self).__init__()
@@ -117,14 +119,14 @@ class Torch(LightSource):
     name = 'torch'
     glyph = '/', T.dark_orange
     level = 1
-    turns = 250
+    turns = 200
     light_range = 6
 
 class Lamp(LightSource):
     name = 'lamp'
     glyph = ']', T.yellow
     level = 3
-    turns = 350
+    turns = 320
     light_range = 10
 
 ###### WEAPONS

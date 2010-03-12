@@ -46,6 +46,12 @@ def random_by_level(level, items):
         max_level = level/2+roll(1,2)
         min_level = 1 #roll(1, max(1, max_level-1))
     items = filter(lambda a: min_level <= a.level <= max_level, items)
+    n = randrange(sum(item.common for item in items))
+    for item in items:
+        if n < item.common:
+            return item
+        else:
+            n -= item.common
     return choice(items)
 
 def array(w, h, func):

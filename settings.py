@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 
-INVENTORY_SIZE = 9
+INVENTORY_SIZE = 8
 
 SCREEN_W = 80
 SCREEN_H = 25
@@ -35,12 +35,10 @@ HELP_TEXT = '''\
 --- Madness - a roguelike ---
 
   Your task is simple: reach level 10 of the dungeon and defeat the evil
-Dungeon Master. Be advised - these are strange dungeons: if you stay long
-enough, you may start seeing things that aren't there. If you stay longer,
-these things may even kill you...
+Dungeon Master. Be careful - not all of what you see is real. And not all of
+what isn't real is harmless...
 
-  You start with a torch in your backpack. It may prove useful - some
-creatures don't like light.
+  You start with a torch in your backpack. Use it well.
 
 --- Keybindings ---
 Move:  numpad,             Inventory:    i

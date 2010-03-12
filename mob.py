@@ -268,7 +268,7 @@ class Player(Mob):
             light.turns_left -= 1
             if light.turns_left <= 0:
                 self.extinguish(light)
-        if roll(1, 1) == 1:
+        if roll(1, 7) == 1:
             self.decrease_sanity(roll(1, max(1, self.map.level/2-3)))
 
     def decrease_sanity(self, n):
@@ -303,6 +303,7 @@ class Monster(Mob):
     ABSTRACT = True
     real = True
     multi = 1
+    common = 10
 
     summoner = False
     fov_range = 5
@@ -454,7 +455,7 @@ class DarkMonster(UnrealMonster):
 class Rat(Monster):
     name = 'rat'
     glyph = 'r', T.dark_orange
-    max_hp = 2
+    max_hp = 4
     dice = 1, 3, 0
     drop_rate = 1
     multi = 4
@@ -463,7 +464,7 @@ class Rat(Monster):
 class Bat(Monster):
     name = 'bat'
     glyph = 'B', T.dark_orange
-    max_hp = 4
+    max_hp = 5
     speed = 2
     dice = 1, 3, 0
     fears_light = True
@@ -472,26 +473,27 @@ class Bat(Monster):
 class Goblin(Monster):
     name = 'goblin'
     glyph = 'g', T.light_blue
-    max_hp = 5
-    dice = 1, 6, 0
+    max_hp = 6
+    dice = 1, 6, 1
     armor = 2
     level = 2
 
 class Orc(Monster):
     name = 'orc'
     glyph = 'o', T.red
-    max_hp = 7
-    dice = 1, 6, 1
+    max_hp = 8
+    dice = 1, 6, 2
     armor = 4
     level = 3
 
 class MadAdventurer(Monster):
     name = 'mad adventurer'
     glyph = '@', T.violet
-    max_hp = 12
-    dice = 1, 6, 1
+    max_hp = 15
+    dice = 1, 10, 1
     armor = 5
     drop_rate = 18
+    common = 5
     level = 4
 
 class Ogre(Monster):
@@ -499,8 +501,8 @@ class Ogre(Monster):
     glyph = 'O', T.dark_green
     max_hp = 18
     speed = -2
-    dice = 1, 8, 2
-    armor = 6
+    dice = 1, 8, 4
+    armor = 4
     level = 4
 
 class KillerBat(Monster):
@@ -519,7 +521,7 @@ class Dragon(Monster):
     glyph = rainbow_glyph('D')
     max_hp = 20
     speed = -1
-    dice = 2, 6, 2
+    dice = 2, 8, 2
     drop_rate = 30
     armor = 7
     level = 5
@@ -529,7 +531,7 @@ class Giant(Monster):
     glyph = 'H', T.light_grey
     max_hp = 20
     speed = -2
-    dice = 2, 6, 0
+    dice = 3, 6, 0
     armor = 6
     level = 5
 
@@ -538,8 +540,8 @@ class Boss(Monster):
     name = 'Dungeon Master'
     glyph = '@', T.grey
     max_hp = 30
-    dice = 3, 2, 4
-    sanity_dice = 1, 6, 0
+    dice = 3, 3, 4
+    sanity_dice = 1, 8, 0
     armor = 5
     summoner = True
     level = 6
@@ -609,7 +611,7 @@ class Ghost(DarkMonster):
 
 class Phantom(DarkMonster):
     name = 'phantom'
-    glyph = '@', T.dark_grey
+    glyph = '@', T.grey
     max_hp = 6
     dice = 1, 8, 0
     sanity_dice = 1, 4, 0
@@ -619,7 +621,7 @@ class Phantom(DarkMonster):
 
 class Grue(DarkMonster):
     name = 'grue'
-    glyph = 'G', T.dark_grey
+    glyph = 'G', T.grey
     max_hp = 20
     dice = 1, 10, 0
     sanity_dice = 1, 6, 0
@@ -627,7 +629,7 @@ class Grue(DarkMonster):
 
 class Horror(DarkMonster):
     name = 'grue'
-    glyph = '&', T.dark_grey
+    glyph = '&', T.grey
     max_hp = 20
     dice = 1, 8, 0
     sanity_dice = 1, 8, 0
