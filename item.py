@@ -81,7 +81,7 @@ class LightSource(Item):
 class Weapon(Item):
     ABSTRACT = True
     slot = 'w'
-    common = 5
+    common = 7
 
     def __init__(self):
         super(Weapon, self).__init__()
@@ -97,12 +97,20 @@ class Weapon(Item):
         return '%s (%s)%s' % (self.name, describe_dice(*self.dice),
                               self.mod_descr)
 
-class Boots(Item):
+class Armor(Item):
+    ABSTRACT = True
+
+    def __init__(self):
+        super(Armor, self).__init__()
+        if roll(1, 5) == 1:
+            self.armor = self.armor + roll(2, 2, -2)
+
+class Boots(Armor):
     ABSTRACT = True
     slot = 'b'
     plural = True
 
-class Armor(Item):
+class Mail(Armor):
     ABSTRACT = True
     slot = 'a'
 
@@ -119,14 +127,14 @@ class Torch(LightSource):
     name = 'torch'
     glyph = '/', T.dark_orange
     level = 1
-    turns = 200
+    turns = 180
     light_range = 6
 
 class Lamp(LightSource):
     name = 'lamp'
     glyph = ']', T.yellow
     level = 3
-    turns = 320
+    turns = 300
     light_range = 10
 
 ###### WEAPONS
@@ -186,6 +194,7 @@ class EterniumSword(Weapon):
     glyph = '(', T.white
     dice = 4, 6, 0
     level = 5
+    common = 5
 
 ##### BOOTS
 
@@ -208,36 +217,40 @@ class BootsSpeed(Boots):
     glyph = '[', T.light_blue
     speed = 3
     level = 5
+    common = 5
 
 ##### ARMOR
 
-class UglyClothes(Armor):
+class UglyClothes(Mail):
     name = 'ugly clothes'
     plural = True
     glyph = '[', T.green
     armor = 1
     level = 1
 
-class RingMail(Armor):
+class RingMail(Mail):
     name = 'ring mail'
     glyph = '[', T.grey
-    armor = 4
+    armor = 3
     speed = -1
     level = 3
+    common = 8
 
-class PlateMail(Armor):
+class PlateMail(Mail):
     name = 'plate mail'
     glyph = '[', T.white
     armor = 6
     speed = -2
     level = 5
+    common = 6
 
 ##### POTIONS
 
 class PotionSanity(Potion):
     glyph = '!', T.blue
     name = 'potion of sanity'
-    level = 2
+    level = 3
+    common = 10
 
     def on_use(self, player):
         super(PotionSanity, self).on_use(player)
@@ -252,6 +265,7 @@ class PotionHealing(Potion):
         super(PotionHealing, self).on_use(player)
         ui.message('You feel healed.')
         player.hp = player.max_hp
+        #player.sanity = min(player.sanity+15, MAX_SANITY)
 
 
 if __name__ == '__main__':

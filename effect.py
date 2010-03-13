@@ -28,7 +28,7 @@ class InsaneEffect(object):
         pass
 
 class Hallu(InsaneEffect):
-    sanity_range = 70, 45
+    sanity_range = 80, 55
 
     def add(self, player):
         if self.exclude not in player.effects:
@@ -50,8 +50,8 @@ class Hallu(InsaneEffect):
 class Happy(Hallu):
     letter = 'h'
     exclude = 'd'
-    add_message = 'You see a rainbow in the distance.'
-    remove_message = 'The darkness is calm once again.'
+    add_message = 'The colors around you suddenly seem more intense.'
+    remove_message = 'The colors return to normal.'
     long_descr = 'You are hallucinating.'
     monsters_from = HappyMonster
 
@@ -75,11 +75,11 @@ class Real(InsaneEffect):
     long_descr = 'Figments of your imagination can hurt you.'
 
 class Fear(InsaneEffect):
-    sanity_range = 30, 10
+    sanity_range = 30, 5
     letter = 'f'
-    add_message = 'You suddenly feel very uneasy.'
-    remove_message = 'You feel less frightened.'
-    long_descr = 'You are paralyzed by fear.'
+    add_message = 'You suddenly feel very scared.'
+    remove_message = 'You feel more confident.'
+    long_descr = 'You are prone to panic attacks.'
 
 EFFECTS = [Dark, Happy, Real, Fear]
 

@@ -1,6 +1,6 @@
 import libtcodpy as libtcod
 
-INVENTORY_SIZE = 8
+INVENTORY_SIZE = 9
 
 SCREEN_W = 80
 SCREEN_H = 25
@@ -19,7 +19,7 @@ FONTS = [
      libtcod.FONT_LAYOUT_ASCII_INCOL),
 ]
 
-VERSION = '0.5'
+VERSION = '1.0'
 TITLE = 'Madness v' + VERSION
 
 TITLE_SCREEN = [

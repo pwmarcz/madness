@@ -96,7 +96,7 @@ class Player(Mob):
         self.hp = self.max_hp
 
         import item
-        self.items = [item.Torch(), item.PotionSanity()]
+        self.items = [item.Torch(), item.PotionSanity(), item.PotionSanity()]
         self.items.append(random_by_level(1, Item.ALL)())
         if wizard:
             self.items += [item.Torch(), item.EterniumSword()]
@@ -128,7 +128,7 @@ class Player(Mob):
 
     def advance(self):
         self.level += 1
-        hp_inc = roll(2,6,self.level)
+        hp_inc = roll(2,6,self.level+3)
         self.max_hp += hp_inc
         self.hp += hp_inc
         ui.message('Congratulations! You advance to level %d.' % self.level,
@@ -166,7 +166,7 @@ class Player(Mob):
         if panic and 'f' in self.effects:
             neighbors = self.map.neighbor_tiles(self.x, self.y)
             n_monsters = sum(1 if tile.mob else 0 for tile in neighbors)
-            if roll(1, 8) <= min(5, n_monsters):
+            if roll(1, 12) <= min(6, n_monsters+1):
                 ui.message('You panic!', T.yellow)
                 dx, dy = choice(ALL_DIRS)
                 self.walk(dx, dy, False)
@@ -221,7 +221,7 @@ class Player(Mob):
         self.hp -= dmg
         if self.hp <= 0:
             if not self.death:
-                ui.message('You die...')
+                ui.message('You die...', T.red)
                 # everything has to look normal?
                 mon.look_normal()
                 self.death = 'killed by %s%s' % (
@@ -259,6 +259,8 @@ class Player(Mob):
 
     def extinguish(self, light):
         ui.message('Your %s is extinguished!' % light.descr)
+        if 'd' in self.effects:
+            ui.message('You are likely to be eaten by a grue.')
         light.on_unequip(self)
         self.equipment['l'] = None
         self.items.remove(light)
@@ -270,14 +272,16 @@ class Player(Mob):
             light.turns_left -= 1
             if light.turns_left <= 0:
                 self.extinguish(light)
-        if roll(1, 7) == 1:
-            self.decrease_sanity(roll(1, max(1, self.map.level/2-3)))
+        if roll(1, 11) == 1:
+            self.decrease_sanity(roll(1, max(2, self.map.level-4)))
 
     def decrease_sanity(self, n):
+        if n <= 0:
+            return
         from effect import add_insane_effects
         self.sanity -= n
         if self.sanity <= 0:
-            ui.message('You feel reality slipping away...')
+            ui.message('You feel reality slipping away...', T.red)
             self.death = 'insane'
         else:
             add_insane_effects(self)
@@ -310,7 +314,7 @@ class Monster(Mob):
     summoner = False
     fov_range = 5
     # n/30 is probability of item drop
-    drop_rate = 2
+    drop_rate = 3
     fears_light = False
 
     def __init__(self):
@@ -321,7 +325,6 @@ class Monster(Mob):
     def look_like(self, cls):
         self.name = cls.name
         self.glyph = cls.glyph
-
     def look_normal(self):
         try:
             del self.name
@@ -475,7 +478,7 @@ class Bat(Monster):
 class Goblin(Monster):
     name = 'goblin'
     glyph = 'g', T.light_blue
-    max_hp = 3
+    max_hp = 4
     dice = 1, 6, 1
     armor = 2
     level = 2
@@ -483,8 +486,8 @@ class Goblin(Monster):
 class Orc(Monster):
     name = 'orc'
     glyph = 'o', T.red
-    max_hp = 6
-    dice = 1, 6, 2
+    max_hp = 8
+    dice = 1, 6, 3
     armor = 4
     level = 3
 
@@ -501,10 +504,10 @@ class MadAdventurer(Monster):
 class Ogre(Monster):
     name = 'ogre'
     glyph = 'O', T.dark_green
-    max_hp = 18
+    max_hp = 20
     speed = -2
-    dice = 1, 8, 4
-    armor = 4
+    dice = 1, 8, 6
+    armor = 5
     level = 4
 
 class KillerBat(Monster):
@@ -523,9 +526,9 @@ class Dragon(Monster):
     glyph = rainbow_glyph('D')
     max_hp = 20
     speed = -1
-    dice = 2, 8, 2
+    dice = 2, 8, 6
     drop_rate = 30
-    armor = 7
+    armor = 8
     level = 5
 
 class Giant(Monster):
@@ -533,8 +536,8 @@ class Giant(Monster):
     glyph = 'H', T.light_grey
     max_hp = 20
     speed = -2
-    dice = 3, 6, 0
-    armor = 6
+    dice = 3, 6, 4
+    armor = 7
     level = 5
 
 class Boss(Monster):
@@ -542,8 +545,8 @@ class Boss(Monster):
     name = 'Dungeon Master'
     glyph = '@', T.grey
     max_hp = 30
-    dice = 3, 3, 4
-    sanity_dice = 1, 8, 0
+    dice = 3, 4, 4
+    sanity_dice = 1, 10, 0
     armor = 5
     summoner = True
     level = 6
@@ -591,7 +594,7 @@ class FSM(HappyMonster):
     glyph = 'S', T.yellow
     max_hp = 15
     dice = 2, 6, 0
-    sanity_dice = 2, 4, 0
+    sanity_dice = 2, 6, 0
     level = 5
 
 ##### DARK (UNREAL) MONSTERS
@@ -630,10 +633,10 @@ class Grue(DarkMonster):
     sanity_dice = 1, 6, 0
     level = 4
 
-class Horror(DarkMonster):
+class Cthulhu(DarkMonster):
     name = 'grue'
-    glyph = '&', T.grey
+    glyph = '&', T.dark_green
     max_hp = 20
-    dice = 1, 8, 0
-    sanity_dice = 1, 8, 0
+    dice = 2, 6, 0
+    sanity_dice = 1, 10, 0
     level = 5

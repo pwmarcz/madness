@@ -39,7 +39,7 @@ def describe_dice(a, b, c):
     return s
 
 def random_by_level(level, items):
-    if roll(1, 300) == 1: # out of depth
+    if roll(1, 200) == 1: # out of depth
         max_level = 100
         min_level = 3
     else:
