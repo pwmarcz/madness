@@ -45,7 +45,7 @@ http://www.gnu.org/copyleft/lesser.html
 
 
 ---
-libtcod library (libtcod-mingw.dll, libtcod.so, libtcodpy.py) license
+libtcod library (libtcod-mingw.dll, libtcod[64].so, libtcodpy.py) license
 ---
 
 * libtcod 1.5.0
