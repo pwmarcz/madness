@@ -23,8 +23,8 @@ class Map(object):
                 tile = self.tiles[x][y]
                 T.map_set_properties(self.fov_map,
                                            x, y,
-                                           tile.walkable,
-                                           tile.transparent)
+                                           tile.transparent,
+                                           tile.walkable)
 
         self.populate()
         if self.level == MAX_DLEVEL:

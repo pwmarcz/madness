@@ -634,7 +634,7 @@ class Grue(DarkMonster):
     level = 4
 
 class Cthulhu(DarkMonster):
-    name = 'grue'
+    name = 'Cthulhu'
     glyph = '&', T.dark_green
     max_hp = 20
     dice = 2, 6, 0
