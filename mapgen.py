@@ -86,6 +86,7 @@ def generate_map(level):
         connect(x1+w1/2, y1+h1/2, x2+w2/2, y2+h2/2)
 
     #print_array(arr)
+    T.path_delete(path)
 
     return array_to_tiles(arr)
 

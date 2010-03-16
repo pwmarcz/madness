@@ -30,6 +30,9 @@ class Map(object):
         if self.level == MAX_DLEVEL:
             self.place_monsters(Boss)
 
+    def __del__(self):
+        T.map_delete(self.fov_map)
+
     def find_tile(self, func):
         for x in range(MAP_W):
             for y in range(MAP_H):
