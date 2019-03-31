@@ -221,7 +221,7 @@ def help_screen():
     T.console_clear(None)
     CON.default_fg = T.light_grey
     for i, line in enumerate(HELP_TEXT.split('\n')):
-        con.print_(1, 1+i, line)
+        CON.print_(1, 1+i, line)
     T.console_flush()
     readkey()
 
@@ -291,7 +291,13 @@ def readkey():
         if key.c != 0 and chr(key.c) not in '\x1b\n\r\t':
             s = chr(key.c)
             if key.shift:
-                s = s.upper()
+                # XXX horrible hack
+                if s == '/':
+                    s = '?'
+                elif s == '.':
+                    s = '>'
+                else:
+                    s = s.upper()
             return s
         elif key.vk != 0:
             return key.vk
