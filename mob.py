@@ -287,7 +287,7 @@ class Player(Mob):
             add_insane_effects(self)
             for eff in list(self.effects.values()):
                 if roll(1, 80) > self.sanity:
-                    severity = roll(1, (8-self.sanity/10))
+                    severity = roll(1, (8-self.sanity//10))
                     eff.do_effect(severity)
 
     def restore_sanity(self):

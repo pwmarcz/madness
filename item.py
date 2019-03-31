@@ -63,7 +63,7 @@ class LightSource(Item):
         if self.turns_left == self.turns:
             s = self.name
         else:
-            p = 100*self.turns_left/self.turns
+            p = 100*self.turns_left//self.turns
             s = '%s (%s%%)' % (self.name, p)
         return s + self.mod_descr
 
