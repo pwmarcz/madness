@@ -253,7 +253,7 @@ def look_mode():
             T.console_blit(CON_MAP, 0, 0, MAP_W, MAP_H,
                            None, 1, 1)
             c = T.console_get_char(CON_MAP, x, y)
-            color = T.console_get_fore(CON_MAP, x, y)
+            color = T.console_get_char_foreground(CON_MAP, x, y)
 
             T.console_put_char_ex(None, x+1, y+1, c,
                                   T.black, color)
