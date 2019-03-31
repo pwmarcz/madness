@@ -1,4 +1,4 @@
-import libtcodpy as libtcod
+import tcod
 
 INVENTORY_SIZE = 9
 
@@ -12,20 +12,20 @@ BUFFER_H = 5
 
 FONTS = [
     ('fonts/terminal10x18.png',
-     libtcod.FONT_LAYOUT_ASCII_INROW),
+     tcod.FONT_LAYOUT_ASCII_INROW),
     ('fonts/terminal8x15.png',
-     libtcod.FONT_LAYOUT_ASCII_INROW),
+     tcod.FONT_LAYOUT_ASCII_INROW),
     ('fonts/terminal8x8.png',
-     libtcod.FONT_LAYOUT_ASCII_INCOL),
+     tcod.FONT_LAYOUT_ASCII_INCOL),
 ]
 
 VERSION = '1.0'
 TITLE = 'Madness v' + VERSION
 
 TITLE_SCREEN = [
-    (libtcod.white, TITLE),
+    (tcod.white, TITLE),
     '',
-    (libtcod.light_grey, 'by hmp <humpolec@gmail.com>'),
+    (tcod.light_grey, 'by hmp <humpolec@gmail.com>'),
     '',
     '',
     'Press any key to continue',
@@ -50,7 +50,7 @@ Help:  ?                   Quit:         q, Esc
 
 [Press any key to continue]'''
 
-UNKNOWN_GLYPH = '?', libtcod.red
+UNKNOWN_GLYPH = '?', tcod.red
 
 MAX_SANITY = 100
 
