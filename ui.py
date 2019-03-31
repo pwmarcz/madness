@@ -1,6 +1,6 @@
 from random import choice
 
-import libtcodpy as T
+import tcod as T
 
 from settings import *
 from util import distance, describe_dice, in_map
@@ -13,10 +13,10 @@ INV_H = INVENTORY_SIZE + 3
 FONT_INDEX = 0
 
 def init(game):
-    global CON_MAP, CON_BUFFER, CON_STATUS, CON_INV, MESSAGES, GAME
+    global CON, CON_MAP, CON_BUFFER, CON_STATUS, CON_INV, MESSAGES, GAME
     GAME = game
     T.console_set_custom_font(*FONTS[FONT_INDEX])
-    T.console_init_root(SCREEN_W, SCREEN_H, TITLE, False)
+    CON = T.console_init_root(SCREEN_W, SCREEN_H, TITLE, False)
     CON_MAP = T.console_new(MAP_W, MAP_H)
     CON_BUFFER = T.console_new(SCREEN_W, BUFFER_H)
     CON_STATUS = T.console_new(STATUS_W, STATUS_H)
@@ -101,10 +101,9 @@ def status_lines():
 def _draw_status():
     con = CON_STATUS
     T.console_clear(con)
-    T.console_set_foreground_color(con, T.light_grey)
+    con.default_fg = T.light_grey
     status = status_lines()
-    T.console_print_left(con, 0, 0, T.BKGND_NONE,
-                               '\n'.join(status))
+    con.print_(0, 0, '\n'.join(status))
     T.console_blit(CON_STATUS, 0, 0, STATUS_W, STATUS_H,
                    None, MAP_W+1, 1)
 
@@ -120,19 +119,17 @@ def _draw_messages():
         latest, s, color = MESSAGES[i]
         if not latest:
             color *= 0.6
-        T.console_set_foreground_color(
-            con,
-            color)
-        T.console_print_left(con, 0, i-start, T.BKGND_NONE, s)
+        con.default_fg = color
+        con.print_(0, i-start, s)
     T.console_blit(con, 0, 0, SCREEN_W, BUFFER_H,
                    None, 1, MAP_H+1)
 
 def _draw_items(title, items):
     con = CON_INV
     T.console_clear(con)
-    T.console_set_foreground_color(con, T.white)
-    T.console_print_left(con, 1, 0, T.BKGND_NONE, title)
-    T.console_set_foreground_color(con, T.light_grey)
+    con.default_fg = T.white
+    con.print_(1, 0, title)
+    con.default_fg = T.light_grey
     for i, item in enumerate(items):
         T.console_put_char_ex(con, 2, i+2, (i+ord('a')),
                               T.light_grey, T.BKGND_NONE)
@@ -142,10 +139,10 @@ def _draw_items(title, items):
         if GAME.player.has_equipped(item):
             T.console_put_char_ex(con, 0, i+2, ord('*'),
                                   T.light_grey, T.BKGND_NONE)
-            T.console_set_foreground_color(con, T.white)
+            con.default_fg = T.white
         else:
-            T.console_set_foreground_color(con, T.grey)
-        T.console_print_left(con, 6, i+2, T.BKGND_NONE, s)
+            con.default_fg = T.grey
+        con.print_(6, i+2, s)
     T.console_blit(con, 0, 0, INV_W, INV_H,
                    None, 1, 1)
 
@@ -213,18 +210,18 @@ def title_screen():
     for i, txt in enumerate(TITLE_SCREEN):
         if isinstance(txt, tuple):
             color, s = txt
-            T.console_set_foreground_color(None, color)
-        else:
+            CON.default_fg = color
+        else:            
             s = txt
-        T.console_print_center(None, SCREEN_W/2, i+5, T.BKGND_NONE, s)
+        CON.print_(SCREEN_W/2, i+5, s, alignment=T.CENTER)
     T.console_flush()
     readkey()
 
 def help_screen():
     T.console_clear(None)
-    T.console_set_foreground_color(None, T.light_grey)
+    CON.default_fg = T.light_grey
     for i, line in enumerate(HELP_TEXT.split('\n')):
-        T.console_print_left(None, 1, 1+i, T.BKGND_NONE, line)
+        con.print_(1, 1+i, line)
     T.console_flush()
     readkey()
 

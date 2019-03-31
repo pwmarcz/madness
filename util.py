@@ -1,6 +1,6 @@
 from random import randrange, choice
 
-import libtcodpy as T
+import tcod as T
 
 from settings import *
 

@@ -1,7 +1,7 @@
 from random import randrange
 from sys import stdout
 
-import libtcodpy as T
+import tcod as T
 
 from settings import *
 from util import *

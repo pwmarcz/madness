@@ -1,4 +1,4 @@
-import libtcodpy as T
+import tcod as T
 
 from settings import *
 from util import *

@@ -1,6 +1,6 @@
 from random import randrange, choice, shuffle
 
-import libtcodpy as T
+import tcod as T
 
 from mob import Monster, UnrealMonster, Player, Boss
 from item import Item
