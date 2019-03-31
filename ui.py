@@ -283,10 +283,10 @@ def look_mode():
 
 def readkey():
     while True:
-        key = T.console_wait_for_keypress(True)
+        key = T.console_wait_for_keypress(False)
         #print key.vk, repr(chr(key.c))
         if key.vk in [T.KEY_SHIFT, T.KEY_CONTROL, T.KEY_ALT,
-                      T.KEY_CAPSLOCK]:
+                      T.KEY_CAPSLOCK, T.KEY_TEXT]:
             continue
         if key.c != 0 and chr(key.c) not in '\x1b\n\r\t':
             s = chr(key.c)
