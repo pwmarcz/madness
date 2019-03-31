@@ -132,13 +132,13 @@ def _draw_items(title, items):
     con.default_fg = T.light_grey
     for i, item in enumerate(items):
         T.console_put_char_ex(con, 2, i+2, (i+ord('a')),
-                              T.light_grey, T.BKGND_NONE)
+                              T.light_grey, T.black)
         c, color = item.glyph
         T.console_put_char_ex(con, 4, i+2, ord(c), color, T.black)
         s = item.descr
         if GAME.player.has_equipped(item):
             T.console_put_char_ex(con, 0, i+2, ord('*'),
-                                  T.light_grey, T.BKGND_NONE)
+                                  T.light_grey, T.black)
             con.default_fg = T.white
         else:
             con.default_fg = T.grey
@@ -169,7 +169,7 @@ def draw_all():
 
 def message(s, color=T.white):
     s = s[0].upper() + s[1:]
-    print s
+    print(s)
     while len(MESSAGES) > BUFFER_H-1 and \
             MESSAGES[-BUFFER_H][0]:
         m = MESSAGES.pop()
@@ -198,7 +198,7 @@ def prompt(s, choices=None):
         return readkey()
 
 def new_ui_turn():
-    for i in reversed(range(len(MESSAGES))):
+    for i in reversed(list(range(len(MESSAGES)))):
         latest, s, color = MESSAGES[i]
         if latest:
             MESSAGES[i] = False, s, color
@@ -213,7 +213,7 @@ def title_screen():
             CON.default_fg = color
         else:            
             s = txt
-        CON.print_(SCREEN_W/2, i+5, s, alignment=T.CENTER)
+        CON.print_(SCREEN_W//2, i+5, s, alignment=T.CENTER)
     T.console_flush()
     readkey()
 
