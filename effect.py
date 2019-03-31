@@ -43,8 +43,7 @@ class Hallu(InsaneEffect):
 
     def remove(self):
         super(Hallu, self).remove()
-        for mon in filter(lambda m: not m.real,
-                          self.player.map.mobs):
+        for mon in [m for m in self.player.map.mobs if not m.real]:
             mon.remove()
 
 class Happy(Hallu):

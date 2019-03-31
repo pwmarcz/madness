@@ -285,7 +285,7 @@ class Player(Mob):
             self.death = 'insane'
         else:
             add_insane_effects(self)
-            for eff in self.effects.values():
+            for eff in list(self.effects.values()):
                 if roll(1, 80) > self.sanity:
                     severity = roll(1, (8-self.sanity/10))
                     eff.do_effect(severity)
@@ -293,7 +293,7 @@ class Player(Mob):
     def restore_sanity(self):
         self.sanity = MAX_SANITY
         ui.message('You feel more awake.', T.yellow)
-        for eff in self.effects.values():
+        for eff in list(self.effects.values()):
             eff.remove()
 
     def resurrect(self):
@@ -303,9 +303,8 @@ class Player(Mob):
         if self.sanity <= 0:
             self.restore_sanity()
 
-class Monster(Mob):
+class Monster(Mob, metaclass=Register):
     ALL = []
-    __metaclass__ = Register
     ABSTRACT = True
     real = True
     multi = 1
@@ -382,8 +381,7 @@ class Monster(Mob):
         return None
 
     def walk_randomly(self):
-        dirs = filter(lambda (dx, dy): self.can_walk(dx, dy),
-                      ALL_DIRS)
+        dirs = [dx_dy for dx_dy in ALL_DIRS if self.can_walk(dx_dy[0], dx_dy[1])]
         if dirs != []:
             self.walk(*choice(dirs))
 

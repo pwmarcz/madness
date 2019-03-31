@@ -43,7 +43,7 @@ def print_array(arr):
 def generate_map(level):
     arr = array(MAP_W, MAP_H, lambda: ' ')
     rooms = []
-    for i in xrange(500):
+    for i in range(500):
         w, h = randrange(5,15), randrange(5,10)
         room = try_put_room(arr, w, h)
         if room:
@@ -55,7 +55,7 @@ def generate_map(level):
 
     costs = [(5, 40, 1),
              (5, 1, 2),
-             (5, 40, 40)][3*level/(MAX_DLEVEL+1)]
+             (5, 40, 40)][3*level//(MAX_DLEVEL+1)]
 
     def corridor_path_func(x1, y1, x2, y2, data):
         if x2 == 0 or x2 == MAP_W-1 or y2 == 0 or y2 == MAP_H-1:
@@ -83,7 +83,7 @@ def generate_map(level):
     for i in range(len(rooms)-1):
         x1, y1, w1, h1 = rooms[i]
         x2, y2, w2, h2 = rooms[i+1]
-        connect(x1+w1/2, y1+h1/2, x2+w2/2, y2+h2/2)
+        connect(x1+w1//2, y1+h1//2, x2+w2//2, y2+h2//2)
 
     #print_array(arr)
     T.path_delete(path)

@@ -5,9 +5,8 @@ from util import *
 from random import choice
 import ui
 
-class Item(object):
+class Item(object, metaclass=Register):
     ALL = []
-    __metaclass__ = Register
     ABSTRACT = True
     common = 10
 
@@ -270,4 +269,4 @@ class PotionHealing(Potion):
 
 if __name__ == '__main__':
     d = [random_by_level(10, Item.ALL)().descr for i in range(20)]
-    print '\n'.join(d)
+    print('\n'.join(d))

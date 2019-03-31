@@ -11,25 +11,16 @@ A quick guide is available after pressing ? in the game.
 HOW TO RUN
 -----
 
-Under Linux:
+  pip install --user tcod==6.0.7
+  python3 madness.py
 
-  python madness.py
-
-You need Python 2.6 and SDL.
-
-Under Windows:
-
-  madness.exe
-
-If you get a "MSVCR90.dll not found" error, you need to download the Microsoft
-Visual C++ 2005 Redistributable Package (2.6 MB). This is a Python runtime's
-dependency.
+Python 3.6 is required.
 
 -----
 TECHNOLOGY
 -----
 
-The game is written in Python 2.6 and uses the Doryen Library
+The game is written in Python and uses the Doryen Library
 (libtcod - http://doryen.eptalys.net/libtcod/) for rendering, field-of-vision
 and pathfinding.
 

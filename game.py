@@ -198,7 +198,7 @@ class Game(object):
                              item.descr))
                 if self.player.effects:
                     f.write('\n  INSANITY\n\n')
-                    for eff in self.player.effects.values():
+                    for eff in list(self.player.effects.values()):
                         f.write(eff.long_descr + '\n')
         except IOError:
             pass
